@@ -1,0 +1,55 @@
+name: Auto Deploy in VPS after push to master
+
+on:
+  push:
+    branches:
+      - master
+jobs:
+  deploy:
+    name: Deploy project
+    permissions:
+      deployments: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull and test
+        uses: appleboy/ssh-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd naria-labs/rzulty-bot-dev/
+            git checkout develop
+            git pull origin develop
+            git pull --recurse-submodules
+            npm ci
+            npm test
+      - name: Update commands
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd naria-labs/rzulty-bot-dev/
+            npm run update-commands
+      - name: Deploy app
+        uses: appleboy/ssh-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd naria-labs/rzulty-bot-dev/
+            pm2 restart develop --update-env
+            
