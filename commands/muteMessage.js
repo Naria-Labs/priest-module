@@ -27,10 +27,14 @@ module.exports = {
 				context: `${userMentioned} is not in a voice channel`,
 				ephemeral: true
 			});
-		} else if (!userID.has('632250692509237268') && !userID.has('632244499292225583') && !userID.has('632244879216345138')) {
+		} 
+		const goodRoles = ['632250692509237268', '632244499292225583', '632244879216345138'];
+		const hasGoodRole = goodRoles.some(role => userMentioned.roles.cache.has(role));
+
+		if (!hasGoodRole) {
 			return interaction.reply({
-				content: `<@${userID}> you can't server mute ${userMentioned} because you dont have a ${goodRoles.join(' or ')}`,
-				ephemeral: true
+				content: `<@${userID}>, you can't server mute ${userMentioned} because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
+				ephemeral: true,
 			});
 		}
 
