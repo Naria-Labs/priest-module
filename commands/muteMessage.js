@@ -27,7 +27,7 @@ module.exports = {
 				context: `${userMentioned} is not in a voice channel`,
 				ephemeral: true
 			});
-		} else if (!userMentioned.has('632250692509237268') && !userMentioned.has('632244499292225583') && !userMentioned.has('632244879216345138')) {
+		} else if (!userID.has('632250692509237268') && !userID.has('632244499292225583') && !userID.has('632244879216345138')) {
 			return interaction.reply({
 				content: `<@${userID}> you can't server mute ${userMentioned} because you dont have a ${goodRoles.join(' or ')}`,
 				ephemeral: true
