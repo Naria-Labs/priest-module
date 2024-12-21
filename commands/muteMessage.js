@@ -20,7 +20,6 @@ module.exports = {
 		const time = interaction.options.getInteger('time');
         const userID = interaction.member.id;
 		const unixTime = Math.floor((Date.now() / 1000) + `${time}` * 60);
-		const goodRoles = ['Perhaps admin', 'Full part admin', 'Moderator'];
 
 		if (!userMentioned.voice.channel) {
 			return interaction.reply({
