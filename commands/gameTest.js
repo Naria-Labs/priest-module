@@ -64,7 +64,7 @@ module.exports = {
             components: [row],
         });
 
-        const collector = interaction.channel.createMessageComponentCollector({ time: 60001 });
+        const collector = interaction.channel.createMessageComponentCollector({ time: 60000 });
 
         const checkPosition = () => {
             if (playerX === pointX && playerY === pointY) {
