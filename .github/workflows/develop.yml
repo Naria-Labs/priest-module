@@ -25,7 +25,7 @@ jobs:
             cd naria-labs/rzulty-bot-priest/
             git checkout develop
             git pull origin develop
-            git pull --recurse-submodules
+            git submodule update --recursive --remote
             npm install
             npm test
       - name: Update commands
