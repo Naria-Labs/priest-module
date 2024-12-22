@@ -88,7 +88,7 @@ module.exports = {
                     await i.reply({ content: 'Send me the message you want to create (not implemented for DMs):', ephemeral: true });
 
                     // In the future for DMs:
-                    //const targetChannel = interaction.channel || interaction.user.dmChannel;
+                    const targetChannel = interaction.channel || interaction.user.dmChannel;
                     // Replace interaction.channel.createMessageCollector() with targetChannel.createMessageCollector()
 
                     const createCollector = targetChannel.createMessageCollector({
@@ -107,7 +107,7 @@ module.exports = {
                     await i.reply({ content: 'Send me the updated message (not implemented for DMs):', ephemeral: true });
 
                     // In the future for DMs:
-                    // const targetChannel = interaction.channel || interaction.user.dmChannel;
+                    const targetChannel = interaction.channel || interaction.user.dmChannel;
                     // Replace interaction.channel.createMessageCollector() with targetChannel.createMessageCollector()
 
                     const updateCollector = targetChannel.createMessageCollector({
