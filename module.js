@@ -7,6 +7,6 @@ module.exports = {
     require('./commands/muteMessage.js'),
     require('./commands/randomImageGenerator.js'),
     require('./commands/textToMeme.js'),
-    requite('./commands/privateList.js'),
+    require('./commands/privateList.js'),
   ]
 }
