@@ -75,7 +75,9 @@ module.exports = {
         // Send the initial interaction response with buttons
         await interaction.reply({ content: 'Choose an action:', components: [buttons], ephemeral: true });
 
-        const collector = interaction.channel.createMessageComponentCollector({ time: 30000 });
+        const channel = interaction.guild ? interaction.channel : interaction.user.dmChannel;
+
+        const collector = channel.createMessageComponentCollector({ time: 30000 });
 
         collector.on('collect', async (i) => {
             if (i.user.id !== userId) {
@@ -87,11 +89,7 @@ module.exports = {
                 case 'create':
                     await i.reply({ content: 'Send me the message you want to create (not implemented for DMs):', ephemeral: true });
 
-                    // In the future for DMs:
-                    const targetChannel = interaction.channel || interaction.user.dmChannel;
-                    // Replace interaction.channel.createMessageCollector() with targetChannel.createMessageCollector()
-
-                    const createCollector = targetChannel.createMessageCollector({
+                    const createCollector = channel.createMessageCollector({
                         filter: (m) => m.author.id === userId,
                         max: 1,
                         time: 15000,
@@ -106,10 +104,7 @@ module.exports = {
                 case 'update':
                     await i.reply({ content: 'Send me the updated message (not implemented for DMs):', ephemeral: true });
 
-                    // In the future for DMs:
-                    // Replace interaction.channel.createMessageCollector() with targetChannel.createMessageCollector()
-
-                    const updateCollector = targetChannel.createMessageCollector({
+                    const updateCollector = channel.createMessageCollector({
                         filter: (m) => m.author.id === userId,
                         max: 1,
                         time: 15000,
