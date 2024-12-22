@@ -65,6 +65,14 @@ module.exports = {
             }
         };
 
+        // Ensure the interaction has a valid channel
+        const channel = interaction.guild ? interaction.channel : interaction.user.dmChannel;
+
+        if (!channel) {
+            console.error('Channel not found.');
+            return;
+        }
+
         const buttons = new ActionRowBuilder().addComponents(
             new ButtonBuilder().setCustomId('show').setLabel('Show').setStyle(ButtonStyle.Success),
             new ButtonBuilder().setCustomId('create').setLabel('Create').setStyle(ButtonStyle.Primary),
@@ -74,8 +82,6 @@ module.exports = {
 
         // Send the initial interaction response with buttons
         await interaction.reply({ content: 'Choose an action:', components: [buttons], ephemeral: true });
-
-        const channel = interaction.guild ? interaction.channel : interaction.user.dmChannel;
 
         const collector = channel.createMessageComponentCollector({ time: 30000 });
 
