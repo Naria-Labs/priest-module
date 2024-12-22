@@ -134,7 +134,6 @@ module.exports = {
             const fs = require('fs');
 
             function addOrUpdateScore(userId, scoreValue) {
-                //create a new score json file for each user in scores directory
                 const scoreFile = `./scores/${userId}.json`;
 
                 //check if the file exists
