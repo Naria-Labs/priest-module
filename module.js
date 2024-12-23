@@ -8,5 +8,6 @@ module.exports = {
     require('./commands/randomImageGenerator.js'),
     require('./commands/textToMeme.js'),
     require('./commands/privateList.js'),
+    require('./commands/help.js'),
   ]
 }
