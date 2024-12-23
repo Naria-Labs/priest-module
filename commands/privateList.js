@@ -71,8 +71,8 @@ module.exports = {
 
         const buttons = new ActionRowBuilder().addComponents(
             new ButtonBuilder().setCustomId('show').setLabel('Show').setStyle(ButtonStyle.Success),
-            new ButtonBuilder().setCustomId('create').setLabel('Create').setStyle(ButtonStyle.Primary),
-            new ButtonBuilder().setCustomId('update').setLabel('Update').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('create').setLabel('Create').setStyle(ButtonStyle.Primary).setDisabled(true),
+        new ButtonBuilder().setCustomId('update').setLabel('Update').setStyle(ButtonStyle.Secondary).setDisabled(true),
             new ButtonBuilder().setCustomId('delete').setLabel('Delete').setStyle(ButtonStyle.Danger),
         );
 
