@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -8,7 +9,6 @@ module.exports = {
     async execute(interaction) {
         const commands = interaction.client.commands;
         const helpEmbed = new EmbedBuilder()
-            // I wanna .setCollor to green
             .setColor(0x00FF00)
             .setTitle('Help')
             .setDescription('List of all commands');
