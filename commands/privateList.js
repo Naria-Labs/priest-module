@@ -1,5 +1,6 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder } = require('discord.js');
-const fs = require('fs');
+const fs = require('fs').promises;
+const path = require('path');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -8,64 +9,42 @@ module.exports = {
 
     async execute(interaction) {
         const userId = interaction.user.id;
+        const messageDir = path.join(__dirname, 'messages');
+        const messageFile = path.join(messageDir, `${userId}.json`);
 
-        const addOrUpdateMessage = (userId, messageContent) => {
-            const messageFile = `./messages/${userId}.json`;
-
-            if (fs.existsSync(messageFile)) {
-                fs.readFile(messageFile, 'utf8', (err, data) => {
-                    if (err) {
-                        console.error('Error reading file:', err);
-                        return;
-                    }
-
-                    const messageData = JSON.parse(data);
-                    messageData.message = messageContent;
-
-                    fs.writeFile(messageFile, JSON.stringify(messageData, null, 4), (err) => {
-                        if (err) {
-                            console.error('Error writing file:', err);
-                            return;
-                        }
-                    });
-                });
-            } else {
-                fs.mkdir('./messages', { recursive: true }, (err) => {
-                    if (err) {
-                        console.error('Error creating directory:', err);
-                        return;
-                    }
-
-                    const messageData = { message: messageContent };
-
-                    fs.writeFile(messageFile, JSON.stringify(messageData, null, 4), (err) => {
-                        if (err) {
-                            console.error('Error writing file:', err);
-                            return;
-                        }
-                    });
-                });
+        const addOrUpdateMessage = async (messageContent) => {
+            try {
+                await fs.mkdir(messageDir, { recursive: true });
+                const messageData = { message: messageContent };
+                await fs.writeFile(messageFile, JSON.stringify(messageData, null, 4));
+            } catch (err) {
+                console.error('Error writing file:', err);
             }
         };
 
-        const getMessage = (userId) => {
-            const messageFile = `./messages/${userId}.json`;
-            if (fs.existsSync(messageFile)) {
-                const data = fs.readFileSync(messageFile, 'utf8');
+        const getMessage = async () => {
+            try {
+                const data = await fs.readFile(messageFile, 'utf8');
                 const messageData = JSON.parse(data);
                 return messageData.message;
-            }
-            return null;
-        };
-
-        const deleteMessage = (userId) => {
-            const messageFile = `./messages/${userId}.json`;
-            if (fs.existsSync(messageFile)) {
-                fs.unlinkSync(messageFile);
+            } catch (err) {
+                if (err.code !== 'ENOENT') {
+                    console.error('Error reading file:', err);
+                }
+                return null;
             }
         };
 
-        // Ensure the interaction has a valid channel
+        const deleteMessage = async () => {
+            try {
+                await fs.unlink(messageFile);
+            } catch (err) {
+                if (err.code !== 'ENOENT') {
+                    console.error('Error deleting file:', err);
+                }
+            }
+        };
+
         const channel = interaction.guild ? interaction.channel : interaction.user.dmChannel;
 
         if (!channel) {
@@ -80,7 +59,6 @@ module.exports = {
             new ButtonBuilder().setCustomId('delete').setLabel('Delete').setStyle(ButtonStyle.Danger),
         );
 
-        // Send the initial interaction response with buttons
         await interaction.reply({ content: 'Choose an action:', components: [buttons], ephemeral: true });
 
         const collector = channel.createMessageComponentCollector({ time: 30000 });
@@ -93,7 +71,13 @@ module.exports = {
 
             switch (i.customId) {
                 case 'create':
-                    await i.reply({ content: 'Send me the message you want to create (not implemented for DMs):', ephemeral: true });
+                    const existingMessage = await getMessage();
+                    if (existingMessage) {
+                        await i.reply({ content: 'You already have a message saved. Do you want to update it instead?', ephemeral: true });
+                        return;
+                    }
+
+                    await i.reply({ content: 'Send me the message you want to create:', ephemeral: true });
 
                     const createCollector = channel.createMessageCollector({
                         filter: (m) => m.author.id === userId,
@@ -101,14 +85,20 @@ module.exports = {
                         time: 15000,
                     });
 
-                    createCollector.on('collect', (m) => {
-                        addOrUpdateMessage(userId, m.content);
-                        m.reply({ content: 'Message saved successfully!', ephemeral: true });
+                    createCollector.on('collect', async (m) => {
+                        await addOrUpdateMessage(m.content);
+                        await m.reply({ content: 'Message saved successfully!' });
+                    });
+
+                    createCollector.on('end', async (collected, reason) => {
+                        if (reason === 'time') {
+                            await i.followUp({ content: 'Time expired. You did not send a message.', ephemeral: true });
+                        }
                     });
                     break;
 
                 case 'update':
-                    await i.reply({ content: 'Send me the updated message (not implemented for DMs):', ephemeral: true });
+                    await i.reply({ content: 'Send me the updated message:', ephemeral: true });
 
                     const updateCollector = channel.createMessageCollector({
                         filter: (m) => m.author.id === userId,
@@ -116,24 +106,31 @@ module.exports = {
                         time: 15000,
                     });
 
-                    updateCollector.on('collect', (m) => {
-                        addOrUpdateMessage(userId, m.content);
-                        m.reply({ content: 'Message updated successfully!', ephemeral: true });
+                    updateCollector.on('collect', async (m) => {
+                        await addOrUpdateMessage(m.content);
+                        await m.reply({ content: 'Message updated successfully!' });
+                    });
+
+                    updateCollector.on('end', async (collected, reason) => {
+                        if (reason === 'time') {
+                            await i.followUp({ content: 'Time expired. You did not send an updated message.', ephemeral: true });
+                        }
                     });
                     break;
 
                 case 'delete':
-                    deleteMessage(userId);
+                    await deleteMessage();
                     await i.reply({ content: 'Message deleted successfully!', ephemeral: true });
                     break;
 
                 case 'show':
-                    const message = getMessage(userId);
-                    //ensure that the message is the max of 2000 characters and show only 1984 characters with :...: at the end
-                    if (message.length > 1984) {
-                        await i.reply({ content: message ? `${message.substring(0, 1984)}...` : 'No message found.', ephemeral: true });
-                    } else
-                    await i.reply({ content: message ? `${message}` : 'No message found.', ephemeral: true });
+                    const message = await getMessage();
+                    if (message) {
+                        const content = message.length > 1984 ? `${message.substring(0, 1984)}...` : message;
+                        await i.reply({ content: content, ephemeral: true });
+                    } else {
+                        await i.reply({ content: 'No message found.', ephemeral: true });
+                    }
                     break;
 
                 default:
@@ -141,8 +138,8 @@ module.exports = {
             }
         });
 
-        collector.on('end', () => {
-            interaction.editReply({ content: 'Interaction ended.', components: [] });
+        collector.on('end', async () => {
+            await interaction.editReply({ content: 'Interaction ended.', components: [] });
         });
     },
 };
