@@ -1,5 +1,5 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder } = require('discord.js');
-const fs = require('fs').promises;
+const fs = require('fs');
 const path = require('path');
 
 module.exports = {
@@ -9,43 +9,60 @@ module.exports = {
 
     async execute(interaction) {
         const userId = interaction.user.id;
-        const messageDir = path.join(__dirname, 'messages');
+        const messageDir = './messages';
         const messageFile = path.join(messageDir, `${userId}.json`);
 
-        const addOrUpdateMessage = async (messageContent) => {
-            try {
-                await fs.mkdir(messageDir, { recursive: true });
-                const messageData = { message: messageContent };
-                await fs.writeFile(messageFile, JSON.stringify(messageData, null, 4));
-            } catch (err) {
-                console.error('Error writing file:', err);
+        const addOrUpdateMessage = (messageContent) => {
+            if (fs.existsSync(messageFile)) {
+                fs.readFile(messageFile, 'utf8', (err, data) => {
+                    if (err) {
+                        console.error('Error reading file:', err);
+                        return;
+                    }
+
+                    const messageData = JSON.parse(data);
+                    messageData.message = messageContent;
+
+                    fs.writeFile(messageFile, JSON.stringify(messageData, null, 4), (err) => {
+                        if (err) {
+                            console.error('Error writing file:', err);
+                        }
+                    });
+                });
+            } else {
+                fs.mkdir(messageDir, { recursive: true }, (err) => {
+                    if (err) {
+                        console.error('Error creating directory:', err);
+                        return;
+                    }
+
+                    const messageData = { message: messageContent };
+
+                    fs.writeFile(messageFile, JSON.stringify(messageData, null, 4), (err) => {
+                        if (err) {
+                            console.error('Error writing file:', err);
+                        }
+                    });
+                });
             }
         };
 
-        const getMessage = async () => {
-            try {
-                const data = await fs.readFile(messageFile, 'utf8');
+        const getMessage = () => {
+            if (fs.existsSync(messageFile)) {
+                const data = fs.readFileSync(messageFile, 'utf8');
                 const messageData = JSON.parse(data);
                 return messageData.message;
-            } catch (err) {
-                if (err.code !== 'ENOENT') {
-                    console.error('Error reading file:', err);
-                }
-                return null;
+            }
+            return null;
+        };
+
+        const deleteMessage = () => {
+            if (fs.existsSync(messageFile)) {
+                fs.unlinkSync(messageFile);
             }
         };
 
-        const deleteMessage = async () => {
-            try {
-                await fs.unlink(messageFile);
-            } catch (err) {
-                if (err.code !== 'ENOENT') {
-                    console.error('Error deleting file:', err);
-                }
-            }
-        };
-
-        const channel = interaction.guild ? interaction.channel : interaction.user.dmChannel;
+        const channel = interaction.channel;
 
         if (!channel) {
             console.error('Channel not found.');
@@ -71,7 +88,7 @@ module.exports = {
 
             switch (i.customId) {
                 case 'create':
-                    const existingMessage = await getMessage();
+                    const existingMessage = getMessage();
                     if (existingMessage) {
                         await i.reply({ content: 'You already have a message saved. Do you want to update it instead?', ephemeral: true });
                         return;
@@ -85,14 +102,14 @@ module.exports = {
                         time: 15000,
                     });
 
-                    createCollector.on('collect', async (m) => {
-                        await addOrUpdateMessage(m.content);
-                        await m.reply({ content: 'Message saved successfully!' });
+                    createCollector.on('collect', (m) => {
+                        addOrUpdateMessage(m.content);
+                        m.reply({ content: 'Message saved successfully!', ephemeral: true });
                     });
 
-                    createCollector.on('end', async (collected, reason) => {
+                    createCollector.on('end', (collected, reason) => {
                         if (reason === 'time') {
-                            await i.followUp({ content: 'Time expired. You did not send a message.', ephemeral: true });
+                            i.followUp({ content: 'Time expired. You did not send a message.', ephemeral: true });
                         }
                     });
                     break;
@@ -106,25 +123,25 @@ module.exports = {
                         time: 15000,
                     });
 
-                    updateCollector.on('collect', async (m) => {
-                        await addOrUpdateMessage(m.content);
-                        await m.reply({ content: 'Message updated successfully!' });
+                    updateCollector.on('collect', (m) => {
+                        addOrUpdateMessage(m.content);
+                        m.reply({ content: 'Message updated successfully!', ephemeral: true });
                     });
 
-                    updateCollector.on('end', async (collected, reason) => {
+                    updateCollector.on('end', (collected, reason) => {
                         if (reason === 'time') {
-                            await i.followUp({ content: 'Time expired. You did not send an updated message.', ephemeral: true });
+                            i.followUp({ content: 'Time expired. You did not send an updated message.', ephemeral: true });
                         }
                     });
                     break;
 
                 case 'delete':
-                    await deleteMessage();
+                    deleteMessage();
                     await i.reply({ content: 'Message deleted successfully!', ephemeral: true });
                     break;
 
                 case 'show':
-                    const message = await getMessage();
+                    const message = getMessage();
                     if (message) {
                         const content = message.length > 1984 ? `${message.substring(0, 1984)}...` : message;
                         await i.reply({ content: content, ephemeral: true });
@@ -138,8 +155,8 @@ module.exports = {
             }
         });
 
-        collector.on('end', async () => {
-            await interaction.editReply({ content: 'Interaction ended.', components: [] });
+        collector.on('end', () => {
+            interaction.editReply({ content: 'Interaction ended.', components: [] });
         });
     },
 };
