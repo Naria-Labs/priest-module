@@ -65,6 +65,26 @@ module.exports = {
             }
         };
 
+        const splitMessage = (message, { maxLength = 2000 } = {}) => {
+            if (message.length <= maxLength) {
+                return [message];
+            }
+
+            const chunks = [];
+            let currentChunk = '';
+
+            for (const line of message.split('\n')) {
+                if (currentChunk.length + line.length + 1 > maxLength) {
+                    chunks.push(currentChunk);
+                    currentChunk = '';
+                }
+                currentChunk += (currentChunk.length ? '\n' : '') + line;
+            }
+
+            if (currentChunk) chunks.push(currentChunk);
+            return chunks;
+        };
+
         // Ensure the interaction has a valid channel
         const channel = interaction.guild ? interaction.channel : interaction.user.dmChannel;
 
