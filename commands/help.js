@@ -10,8 +10,8 @@ module.exports = {
         const commands = interaction.client.commands;
         const helpEmbed = new EmbedBuilder()
             .setColor(0x00FF00)
-            .setTitle('Help')
-            .setDescription('List of all commands');
+            .setTitle('Help Information')
+            .setDescription('List of all commands so far');
         commands.forEach(command => {
             helpEmbed.addFields({
                 name: command.data.name,
