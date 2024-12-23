@@ -65,26 +65,6 @@ module.exports = {
             }
         };
 
-        const splitMessage = (message, { maxLength = 2000 } = {}) => {
-            if (message.length <= maxLength) {
-                return [message];
-            }
-
-            const chunks = [];
-            let currentChunk = '';
-
-            for (const line of message.split('\n')) {
-                if (currentChunk.length + line.length + 1 > maxLength) {
-                    chunks.push(currentChunk);
-                    currentChunk = '';
-                }
-                currentChunk += (currentChunk.length ? '\n' : '') + line;
-            }
-
-            if (currentChunk) chunks.push(currentChunk);
-            return chunks;
-        };
-
         // Ensure the interaction has a valid channel
         const channel = interaction.guild ? interaction.channel : interaction.user.dmChannel;
 
@@ -149,22 +129,11 @@ module.exports = {
 
                 case 'show':
                     const message = getMessage(userId);
-
-                    if (message && message.trim()) {
-                        const chunks = splitMessage(message, { maxLength: 1984 });
-                        for (const chunk of chunks) {
-                            await i.reply({
-                                content: chunk,
-                                ephemeral: true,
-                            });
-                        }
-                    } else {
-                        await i.reply({
-                            content: 'No message found or the message is empty.',
-                            ephemeral: true,
-                        });
-                    }
-
+                    //ensure that the message is the max of 2000 characters and show only 1984 characters with :...: at the end
+                    if (message.length > 1984) {
+                        await i.reply({ content: message ? `${message.substring(0, 1984)}...` : 'No message found.', ephemeral: true });
+                    } else
+                    await i.reply({ content: message ? `${message}` : 'No message found.', ephemeral: true });
                     break;
 
                 default:
