@@ -129,7 +129,21 @@ module.exports = {
 
                 case 'show':
                     const message = getMessage(userId);
-                    await i.reply({ content: message ? `Your message: "${message}"` : 'No message found.', ephemeral: true });
+
+                    if (message) {
+                        const chunks = splitMessage(message, { maxLength: 1984 });
+                        for (const chunk of chunks) {
+                            await i.reply({
+                                content: chunk,
+                                ephemeral: true
+                            });
+                        }
+                    } else {
+                        await i.reply({
+                            content: 'No message found.',
+                            ephemeral: true
+                        });
+                    }
                     break;
 
                 default:
