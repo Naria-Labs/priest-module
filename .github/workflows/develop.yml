@@ -23,8 +23,8 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd naria-labs/rzulty-bot-priest/
-            git checkout develop
-            git pull origin develop
+            git checkout developPriestDeploy
+            git pull origin developPriestDeploy
             git submodule update --remote --recursive
             npm install
             npm test
@@ -52,4 +52,19 @@ jobs:
           script: |
             cd naria-labs/rzulty-bot-priest/
             pm2 restart develop-priest --update-env
-            
+      - name: Update module version
+        uses: appleboy/ssh-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd naria-labs/rzulty-bot-priest/
+            git config user.name "Naria Labs"
+            git add modules
+            git commit -m "Automated module version update"
+            git push
