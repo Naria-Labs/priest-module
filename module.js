@@ -1,5 +1,5 @@
 module.exports = {
   commands: [
-    require('./utils/ping.js'),
+    //require('./utils/ping.js'),
   ]
 }
