@@ -84,6 +84,8 @@ module.exports = {
             if (buttonInteraction.user.id !== interaction.user.id) {
                 return buttonInteraction.reply({ content: 'This game is not for you!', ephemeral: true });
             }
+            updateButtons();
+            checkPosition();
 
             Board[playerX][playerY] = '<:space:1315336436987203716>';
 
