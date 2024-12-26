@@ -1,4 +1,4 @@
-name: Auto Deploy in VPS after push to master
+name: Auto Deploy to dev bot in VPS after push to master
 
 on:
   push:
@@ -28,18 +28,7 @@ jobs:
             git submodule update --remote --recursive
             npm ci
             npm test
-      - name: Update commands
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.VPS_IP }}
-          username: ${{ secrets.VPS_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          port: ${{ secrets.PORT }}
-          script: |
-            cd naria-labs/rzulty-bot-dev/
-            npm run update-commands
-      - name: Deploy app
+      - name: Update modules and proc develop update pipeline
         uses: appleboy/ssh-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
@@ -51,5 +40,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd naria-labs/rzulty-bot-dev/
-            pm2 restart develop --update-env
-            
+            git config user.name "Naria Labs"
+            git add modules
+            git commit -m "Automated module version update"
+            git push
