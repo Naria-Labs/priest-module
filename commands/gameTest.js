@@ -7,7 +7,7 @@ module.exports = {
         .addIntegerOption(option =>
             option.setName('number')
                 .setDescription('Set the board size')
-                .setMinValue(1)
+                .setMinValue(3)
                 .setMaxValue(8)
         ),
 
