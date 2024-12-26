@@ -11,13 +11,14 @@ module.exports = {
                 .setMaxValue(8)
         ),
 
+
     async execute(interaction) {
         const author = interaction.member;
         const boardSize = interaction.options.getInteger('number');
         let Board = Array.from({ length: boardSize }, () => Array(boardSize).fill('<:space:1315336436987203716>'));
 
-        let playerX = Math.floor(Math.random() * boardSize);
-        let playerY = Math.floor(Math.random() * boardSize);
+        let playerX = Math.floor(Math.random() * (boardSize-1));
+        let playerY = Math.floor(Math.random() * (boardSize-1));
 
         let pointX = Math.floor(Math.random() * boardSize);
         let pointY = Math.floor(Math.random() * boardSize);
@@ -64,7 +65,12 @@ module.exports = {
             components: [row],
         });
 
-        const collector = interaction.channel.createMessageComponentCollector({ time: 60001 });
+        const updateButtons = () => {
+            left.setDisabled(playerY === 0);
+            up.setDisabled(playerX === 0);
+            down.setDisabled(playerX === boardSize - 1);
+            right.setDisabled(playerY === boardSize - 1);
+        };
 
         const checkPosition = () => {
             if (playerX === pointX && playerY === pointY) {
@@ -73,13 +79,10 @@ module.exports = {
                 scoreValue++;
             }
         };
-        const updateButtons = () => {
-            left.setDisabled(playerY === 0);
-            up.setDisabled(playerX === 0);
-            down.setDisabled(playerX === boardSize - 1);
-            right.setDisabled(playerY === boardSize - 1);
-        };
 
+
+        const collector = interaction.channel.createMessageComponentCollector({ time: 60001 });
+        //where the game is starting
         collector.on('collect', async buttonInteraction => {
             if (buttonInteraction.user.id !== interaction.user.id) {
                 return buttonInteraction.reply({ content: 'This game is not for you!', ephemeral: true });
@@ -108,9 +111,9 @@ module.exports = {
 
 
             //scoreValue++; //change it later for a a smth that is not incrementing the score every time you move
-            checkPosition();
             updateScoreButton();
             updateButtons();
+            checkPosition();
 
             Board[playerX][playerY] = '<:trolldespair:1314248186352763003>';
             Board[pointX][pointY] = '<:yippee:1314224420566339615>';
