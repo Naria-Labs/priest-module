@@ -80,6 +80,13 @@ module.exports = {
             }
         };
 
+        const checkPosition2 = () => {
+            if (playerX === pointX && playerY === pointY) {
+                pointX = Math.floor(Math.random() * boardSize);
+                pointY = Math.floor(Math.random() * boardSize);
+            }
+        }
+
 
         const collector = interaction.channel.createMessageComponentCollector({ time: 60001 });
         //where the game is starting
@@ -89,6 +96,7 @@ module.exports = {
             }
             updateButtons();
             checkPosition();
+            checkPosition2();
 
             Board[playerX][playerY] = '<:space:1315336436987203716>';
 
@@ -114,6 +122,7 @@ module.exports = {
             updateScoreButton();
             updateButtons();
             checkPosition();
+            checkPosition2();
 
             Board[playerX][playerY] = '<:trolldespair:1314248186352763003>';
             Board[pointX][pointY] = '<:yippee:1314224420566339615>';
