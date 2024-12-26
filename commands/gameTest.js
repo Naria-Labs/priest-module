@@ -121,11 +121,12 @@ module.exports = {
             //scoreValue++; //change it later for a a smth that is not incrementing the score every time you move
             updateScoreButton();
             updateButtons();
-            checkPosition();
-            checkPosition2();
 
             Board[playerX][playerY] = '<:trolldespair:1314248186352763003>';
             Board[pointX][pointY] = '<:yippee:1314224420566339615>';
+
+            checkPosition();
+            checkPosition2();
 
             await buttonInteraction.update({
                 content: getBoardString(),
