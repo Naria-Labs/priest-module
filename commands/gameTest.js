@@ -74,18 +74,13 @@ module.exports = {
 
         const checkPosition = () => {
             if (playerX === pointX && playerY === pointY) {
-                pointX = Math.floor(Math.random() * boardSize);
-                pointY = Math.floor(Math.random() * boardSize);
+                do {
+                    pointX = Math.floor(Math.random() * boardSize);
+                    pointY = Math.floor(Math.random() * boardSize);
+                } while (pointX === playerX && pointY === playerY);
                 scoreValue++;
             }
         };
-
-        const checkPosition2 = () => {
-            if (playerX === pointX && playerY === pointY) {
-                pointX = Math.floor(Math.random() * boardSize);
-                pointY = Math.floor(Math.random() * boardSize);
-            }
-        }
 
 
         const collector = interaction.channel.createMessageComponentCollector({ time: 60001 });
@@ -96,7 +91,6 @@ module.exports = {
             }
             updateButtons();
             checkPosition();
-            checkPosition2();
 
             Board[playerX][playerY] = '<:space:1315336436987203716>';
 
@@ -119,14 +113,13 @@ module.exports = {
 
 
             //scoreValue++; //change it later for a a smth that is not incrementing the score every time you move
-            updateScoreButton();
-            updateButtons();
+            checkPosition();
 
             Board[playerX][playerY] = '<:trolldespair:1314248186352763003>';
             Board[pointX][pointY] = '<:yippee:1314224420566339615>';
 
-            checkPosition();
-            checkPosition2();
+            updateScoreButton();
+            updateButtons();
 
             await buttonInteraction.update({
                 content: getBoardString(),
