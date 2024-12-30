@@ -9,5 +9,6 @@ module.exports = {
     require('./commands/textToMeme.js'),
     require('./commands/privateList.js'),
     require('./commands/help.js'),
+    require('/commands/based.js'),
   ]
 }
