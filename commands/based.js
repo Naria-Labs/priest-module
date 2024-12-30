@@ -19,11 +19,11 @@ module.exports = {
 		const green = 0x008000;
 		const userMentioned = interaction.options.getMember('user');
 		const userID = userMentioned.id;
-		const userString = parseInt(userID.toString().slice(-2), 10);
+		const userString = parseInt(userID.toString().slice(-2));
 		const today = new Date().getDate();
         
 		const ifBased = userString * today;
-		const basedLvl = parseInt(ifBased.toString().slice(-2), 10);
+		const basedLvl = parseInt(ifBased.toString().slice(-2));
 
 		let basedColor;
 		let text;
