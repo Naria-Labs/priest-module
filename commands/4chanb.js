@@ -10,11 +10,10 @@ module.exports = {
     async execute(interaction) {
         const fetchImage = async () => {
             try {
-                //getting the page
+                //page
                 const response = await axios.get('https://boards.4chan.org/b/');
                 const $ = cheerio.load(response.data);
                 const images = [];
-                //getting the image from i.4cdn.org
                 $('img').each((i, element) => {
                     const imgSrc = $(element).attr('src');
                     if (imgSrc && imgSrc.startsWith('//i.4cdn.org')) {
@@ -27,18 +26,17 @@ module.exports = {
                 return null;
             }
         };
-        //error handling
+
         const imageUrl = await fetchImage();
         if (!imageUrl) {
             await interaction.reply('Failed to fetch image from 4chan.');
             return;
         }
-
-        const refreshButton = new MessageButton()
+        //button
+        const refreshButton = new ButtonBuilder()
             .setLabel('Refresh')
             .setStyle('PRIMARY')
             .setCustomId('refresh')
-            //hopefully this emoji works
             .setEmoji('🔄');
 
         const row = new ActionRowBuilder().addComponents(refreshButton);
