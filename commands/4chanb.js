@@ -10,17 +10,21 @@ module.exports = {
     async execute(interaction) {
         const fetchImage = async () => {
             try {
-                //page
+                // Fetch the page content
                 const response = await axios.get('https://boards.4chan.org/b/');
                 const $ = cheerio.load(response.data);
                 const images = [];
+
+                // Extract image links
                 $('img').each((i, element) => {
                     const imgSrc = $(element).attr('src');
                     if (imgSrc && imgSrc.startsWith('//i.4cdn.org')) {
                         images.push(`https:${imgSrc}`);
                     }
                 });
-                return images[Math.floor(Math.random() * images.length)];
+
+                // Return a random image
+                return images.length > 0 ? images[Math.floor(Math.random() * images.length)] : null;
             } catch (error) {
                 console.error('Error fetching image:', error);
                 return null;
@@ -32,47 +36,51 @@ module.exports = {
             await interaction.reply('Failed to fetch image from 4chan.');
             return;
         }
-        //button
+
+        // Create the refresh button
         const refreshButton = new ButtonBuilder()
             .setLabel('Refresh')
-            .setStyle('PRIMARY')
+            .setStyle('PRIMARY') // Use ButtonStyle.Primary in Discord.js v14+
             .setCustomId('refresh')
             .setEmoji('🔄');
 
         const row = new ActionRowBuilder().addComponents(refreshButton);
 
+        // Create and send the embed
         const embed = new EmbedBuilder()
             .setColor(0x00ff00)
             .setTitle('Random 4chan Image')
             .setImage(imageUrl)
             .setTimestamp()
-            .setFooter({ text: `Source: 4chan ${imageUrl}` });
+            .setFooter({ text: `Source: 4chan` });
 
         await interaction.reply({ embeds: [embed], components: [row] });
 
-        const collector = interaction.channel.createMessageComponentCollector({ time: 60000 });
+        // Create a collector to handle button interaction
+        const collector = interaction.channel.createMessageComponentCollector({
+            filter: (btnInt) => btnInt.customId === 'refresh' && btnInt.user.id === interaction.user.id,
+            time: 60000, // 1 minute
+        });
 
         collector.on('collect', async (buttonInteraction) => {
-            if (buttonInteraction.customId === 'refresh') {
-                const newImageUrl = await fetchImage();
-                if (!newImageUrl) {
-                    await buttonInteraction.reply('Failed to fetch image from 4chan.');
-                    return;
-                }
-
-                const newEmbed = new EmbedBuilder()
-                    .setColor(0x00ff00)
-                    .setTitle('Random 4chan Image')
-                    .setImage(newImageUrl)
-                    .setTimestamp()
-                    .setFooter({ text: `Source: 4chan ${imageUrl}` });
-
-                await buttonInteraction.update({ embeds: [newEmbed] });
+            const newImageUrl = await fetchImage();
+            if (!newImageUrl) {
+                await buttonInteraction.reply({ content: 'Failed to fetch image from 4chan.', ephemeral: true });
+                return;
             }
+
+            const newEmbed = new EmbedBuilder()
+                .setColor(0x00ff00)
+                .setTitle('Random 4chan Image')
+                .setImage(newImageUrl)
+                .setTimestamp()
+                .setFooter({ text: `Source: 4chan` });
+
+            await buttonInteraction.update({ embeds: [newEmbed] });
         });
 
         collector.on('end', () => {
-            refreshButton.setDisabled(true);
+            refreshButton.setDisabled(true); // Disable the button when the collector ends
             interaction.editReply({ components: [row] });
         });
     },
