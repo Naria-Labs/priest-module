@@ -49,7 +49,7 @@ module.exports = {
             .setTitle('Random 4chan Image')
             .setImage(imageUrl)
             .setTimestamp()
-            .setFooter({ text: `Source: 4chan` });
+            .setFooter({ text: `Source: 4chan ${imageUrl}` });
 
         await interaction.editReply({ embeds: [embed], components: [row] });
 
@@ -73,7 +73,7 @@ module.exports = {
                     .setTitle('Random 4chan Image')
                     .setImage(newImageUrl)
                     .setTimestamp()
-                    .setFooter({ text: `Source: 4chan` });
+                    .setFooter({ text: `Source: 4chan ${newImageUrl}` });
 
                 await buttonInteraction.editReply({ embeds: [newEmbed] });
             }
