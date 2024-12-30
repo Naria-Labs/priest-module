@@ -31,7 +31,8 @@ module.exports = {
         };
 
         const imageUrl = await fetchImage();
-        if (!imageUrl) {
+        const imageBig = imageUrl.replace('s.jpg', '.jpg');
+        if (!imageBig) {
             await interaction.editReply('Failed to fetch image from 4chan.');
             return;
         }
@@ -47,10 +48,10 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setColor(0x00ff00)
             .setTitle('Random 4chan Image')
-            .setImage(imageUrl)
+            .setImage(imageBig)
             .setTimestamp()
 
-            .setFooter({ text: `Source: 4chan # [Site](<${imageUrl}>)` });
+            .setFooter({ text: `Source: 4chan #[Image](${imageBig})` });
 
         await interaction.editReply({ embeds: [embed], components: [row] });
 
@@ -64,7 +65,8 @@ module.exports = {
                 await buttonInteraction.deferUpdate(); // Defer the interaction immediately
 
                 const newImageUrl = await fetchImage();
-                if (!newImageUrl) {
+                const newImageBig = newImageUrl.replace('s.jpg', '.jpg');
+                if (!newImageBig) {
                     await buttonInteraction.followUp('Failed to fetch image from 4chan.');
                     return;
                 }
@@ -72,9 +74,9 @@ module.exports = {
                 const newEmbed = new EmbedBuilder()
                     .setColor(0x00ff00)
                     .setTitle('Random 4chan Image')
-                    .setImage(newImageUrl)
+                    .setImage(newImageBig)
                     .setTimestamp()
-                    .setFooter({ text: `Source: 4chan # [Site](<${newImageUrl}>)` });
+                    .setFooter({ text: `Source: 4chan #[Image](${newImageBig})` });
 
                 await buttonInteraction.editReply({ embeds: [newEmbed] });
             }
