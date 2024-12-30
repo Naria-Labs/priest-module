@@ -8,14 +8,14 @@ module.exports = {
         .setDescription('See the pictures from 4chan/b'),
 
     async execute(interaction) {
+        await interaction.deferReply(); // Acknowledge the interaction immediately
+
         const fetchImage = async () => {
             try {
-                // Fetch the page content
                 const response = await axios.get('https://boards.4chan.org/b/');
                 const $ = cheerio.load(response.data);
                 const images = [];
 
-                // Extract image links
                 $('img').each((i, element) => {
                     const imgSrc = $(element).attr('src');
                     if (imgSrc && imgSrc.startsWith('//i.4cdn.org')) {
@@ -23,7 +23,6 @@ module.exports = {
                     }
                 });
 
-                // Return a random image
                 return images.length > 0 ? images[Math.floor(Math.random() * images.length)] : null;
             } catch (error) {
                 console.error('Error fetching image:', error);
@@ -33,20 +32,18 @@ module.exports = {
 
         const imageUrl = await fetchImage();
         if (!imageUrl) {
-            await interaction.reply('Failed to fetch image from 4chan.');
+            await interaction.editReply('Failed to fetch image from 4chan.');
             return;
         }
 
-        // Create the refresh button
         const refreshButton = new ButtonBuilder()
             .setLabel('Refresh')
-            .setStyle('PRIMARY') // Use ButtonStyle.Primary in Discord.js v14+
+            .setStyle('Primary')
             .setCustomId('refresh')
             .setEmoji('🔄');
 
         const row = new ActionRowBuilder().addComponents(refreshButton);
 
-        // Create and send the embed
         const embed = new EmbedBuilder()
             .setColor(0x00ff00)
             .setTitle('Random 4chan Image')
@@ -54,34 +51,35 @@ module.exports = {
             .setTimestamp()
             .setFooter({ text: `Source: 4chan` });
 
-        await interaction.reply({ embeds: [embed], components: [row] });
+        await interaction.editReply({ embeds: [embed], components: [row] });
 
-        // Create a collector to handle button interaction
         const collector = interaction.channel.createMessageComponentCollector({
-            filter: (btnInt) => btnInt.customId === 'refresh' && btnInt.user.id === interaction.user.id,
-            time: 60000, // 1 minute
+            componentType: 'BUTTON',
+            time: 60000, // Collect interactions for 60 seconds
         });
 
         collector.on('collect', async (buttonInteraction) => {
-            const newImageUrl = await fetchImage();
-            if (!newImageUrl) {
-                await buttonInteraction.reply({ content: 'Failed to fetch image from 4chan.', ephemeral: true });
-                return;
+            if (buttonInteraction.customId === 'refresh') {
+                const newImageUrl = await fetchImage();
+                if (!newImageUrl) {
+                    await buttonInteraction.reply('Failed to fetch image from 4chan.');
+                    return;
+                }
+
+                const newEmbed = new EmbedBuilder()
+                    .setColor(0x00ff00)
+                    .setTitle('Random 4chan Image')
+                    .setImage(newImageUrl)
+                    .setTimestamp()
+                    .setFooter({ text: `Source: 4chan` });
+
+                await buttonInteraction.update({ embeds: [newEmbed] });
             }
-
-            const newEmbed = new EmbedBuilder()
-                .setColor(0x00ff00)
-                .setTitle('Random 4chan Image')
-                .setImage(newImageUrl)
-                .setTimestamp()
-                .setFooter({ text: `Source: 4chan` });
-
-            await buttonInteraction.update({ embeds: [newEmbed] });
         });
 
-        collector.on('end', () => {
-            refreshButton.setDisabled(true); // Disable the button when the collector ends
-            interaction.editReply({ components: [row] });
+        collector.on('end', async () => {
+            refreshButton.setDisabled(true);
+            await interaction.editReply({ components: [new ActionRowBuilder().addComponents(refreshButton)] });
         });
     },
 };
