@@ -8,7 +8,7 @@ module.exports = {
         .setDescription('See the pictures from 4chan/b'),
 
     async execute(interaction) {
-        await interaction.deferReply(); // Acknowledge the interaction immediately
+        await interaction.deferReply(); //Iinteraction immediately
 
         const fetchImage = async () => {
             try {
@@ -37,7 +37,6 @@ module.exports = {
         }
 
         const refreshButton = new ButtonBuilder()
-            .setLabel('Refresh')
             .setStyle('Primary')
             .setCustomId('refresh')
             .setEmoji('🔄');
@@ -55,14 +54,16 @@ module.exports = {
 
         const collector = interaction.channel.createMessageComponentCollector({
             componentType: 'BUTTON',
-            time: 60000, // Collect interactions for 60 seconds
+            time: 60000, //Collect interactions for 60 seconds
         });
 
         collector.on('collect', async (buttonInteraction) => {
             if (buttonInteraction.customId === 'refresh') {
+                await buttonInteraction.deferUpdate(); //Interaction immediately
+
                 const newImageUrl = await fetchImage();
                 if (!newImageUrl) {
-                    await buttonInteraction.reply('Failed to fetch image from 4chan.');
+                    await buttonInteraction.followUp('Failed to fetch image from 4chan.');
                     return;
                 }
 
@@ -73,7 +74,7 @@ module.exports = {
                     .setTimestamp()
                     .setFooter({ text: `Source: 4chan` });
 
-                await buttonInteraction.update({ embeds: [newEmbed] });
+                await buttonInteraction.editReply({ embeds: [newEmbed] });
             }
         });
 
