@@ -10,5 +10,6 @@ module.exports = {
     require('./commands/privateList.js'),
     require('./commands/help.js'),
     require('./commands/based.js'),
+    require('./commands/4chanb.js'),
   ]
 }
