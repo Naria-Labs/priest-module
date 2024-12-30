@@ -1,14 +1,14 @@
-﻿const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+﻿const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ActionRowBuilder } = require('discord.js');
 const axios = require('axios');
 const cheerio = require('cheerio');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('4chan')
-        .setDescription('See a random picture from 4chan/b'),
+        .setDescription('See the pictures from 4chan/b'),
 
     async execute(interaction) {
-        await interaction.deferReply(); //Interaction immediately
+        await interaction.deferReply(); //Iinteraction immediately
 
         const fetchImage = async () => {
             try {
@@ -41,8 +41,18 @@ module.exports = {
             .setTitle('Random 4chan Image')
             .setImage(imageUrl)
             .setTimestamp()
-            .setFooter({ text: `Source: 4chan${images}` });
+            .setFooter({ text: `Source: 4chan${image}` });
 
         await interaction.editReply({ embeds: [embed] });
+
+        const collector = interaction.channel.createMessageComponentCollector({
+            componentType: 'BUTTON',
+            time: 4000, //Collect interactions for 4 seconds
+        });
+
+        collector.on('end', async () => {
+            refreshButton.setDisabled(true);
+            await interaction.editReply({ components: [new ActionRowBuilder().addComponents(refreshButton)] });
+        });
     },
 };
