@@ -1,4 +1,4 @@
-﻿const { SlashCommandBuilder, EmbedBuilder, MessageButton, ActionRowBuilder } = require('discord.js');
+﻿const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ActionRowBuilder } = require('discord.js');
 const axios = require('axios');
 const cheerio = require('cheerio');
 
