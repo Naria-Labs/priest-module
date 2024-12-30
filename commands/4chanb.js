@@ -36,13 +36,6 @@ module.exports = {
             return;
         }
 
-        const refreshButton = new ButtonBuilder()
-            .setStyle('Primary')
-            .setCustomId('refresh')
-            .setEmoji('🔄');
-
-        const row = new ActionRowBuilder().addComponents(refreshButton);
-
         const embed = new EmbedBuilder()
             .setColor(0x00ff00)
             .setTitle('Random 4chan Image')
@@ -50,7 +43,7 @@ module.exports = {
             .setTimestamp()
             .setFooter({ text: `Source: 4chan` });
 
-        await interaction.editReply({ embeds: [embed], components: [row] });
+        await interaction.editReply({ embeds: [embed] });
 
         const collector = interaction.channel.createMessageComponentCollector({
             componentType: 'BUTTON',
