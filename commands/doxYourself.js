@@ -7,7 +7,7 @@ module.exports = {
         .setDescription('Dox yourself via Discord :3'),
 
     async execute(interaction) {
-        await interaction.deferReply({ ephemeral: true }); // Defer response
+        await interaction.deferReply(); // Defer response
 
         const initialEmbed = new EmbedBuilder()
             .setColor(0x00ff00)
@@ -25,7 +25,6 @@ module.exports = {
 
         await interaction.editReply({ embeds: [initialEmbed], components: [row] });
 
-        //15 sec time
         const filter = (i) => i.customId === 'fetch_location' && i.user.id === interaction.user.id;
         const collector = interaction.channel.createMessageComponentCollector({
             filter,
@@ -36,7 +35,7 @@ module.exports = {
             await buttonInteraction.deferUpdate(); // Acknowledge button interaction
 
             try {
-                //IP
+                // Fetch IP data
                 const response = await axios.get('http://ip-api.com/json/');
                 const { city, regionName, country, lat, lon, isp } = response.data;
                 const googleMapsLink = `https://www.google.com/maps?q=${lat},${lon}`;
@@ -56,25 +55,25 @@ module.exports = {
                     .setDescription(`[View on Google Maps](${googleMapsLink})`)
                     .setFooter({ text: 'Location data powered by Google, that knows everything about you.' });
 
-                await interaction.followUp({ embeds: [locationEmbed], ephemeral: true });
+                await buttonInteraction.followUp({ embeds: [locationEmbed], ephemeral: true });
             } catch (error) {
                 console.error('Error fetching location data:', error);
 
-                //Error embed
+                // Error embed
                 const errorEmbed = new EmbedBuilder()
                     .setColor(0xff0000)
                     .setTitle('Error')
                     .setDescription('Unable to fetch location data. Please try again later.');
 
-                await interaction.followUp({ embeds: [errorEmbed], ephemeral: true });
+                await buttonInteraction.followUp({ embeds: [errorEmbed], ephemeral: true });
             }
         });
 
         collector.on('end', async (collected) => {
             if (collected.size === 0) {
-                //Button begone after the time limit
+                // Disable button after the time limit
                 button.setDisabled(true);
-                await interaction.editReply({ components: [row] });
+                await interaction.editReply({ components: [new ActionRowBuilder().addComponents(button)] });
             }
         });
     },
