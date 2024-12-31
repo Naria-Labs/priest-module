@@ -5,10 +5,10 @@ const cheerio = require('cheerio');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('4chan')
-        .setDescription('See the pictures from 4chan/b'),
+        .setDescription('4chan roulete you have 5 tries from 4chan/b'),
 
     async execute(interaction) {
-        await interaction.deferReply(); // Defer the interaction immediately
+        await interaction.deferReply(); // Interaction immediately deferred
 
         const fetchImage = async () => {
             try {
@@ -30,6 +30,7 @@ module.exports = {
             }
         };
 
+        let refreshId = 0;
         const imageUrl = await fetchImage();
         const imageBig = imageUrl.replace('s.jpg', '.jpg');
         if (!imageBig) {
@@ -38,7 +39,7 @@ module.exports = {
         }
 
         const refreshButton = new ButtonBuilder()
-            .setLabel('Refresh')
+            .setLabel(`Refresh ${refreshId}/5`)
             .setStyle(ButtonStyle.Primary)
             .setCustomId('refresh')
             .setEmoji('🔄');
@@ -51,19 +52,19 @@ module.exports = {
             .setImage(imageBig)
             .setTimestamp()
             .setDescription(`[Image](${imageBig})`)
-            .setFooter({ text: `Source: 4chan/b` });
+            .setFooter({ text: `Powered by: 4chan/b` });
 
         await interaction.editReply({ embeds: [embed], components: [row] });
 
         const collector = interaction.channel.createMessageComponentCollector({
             componentType: ComponentType.Button,
-            time: 60000, // Collect interactions for 60 seconds
+            time: 60000,
         });
 
         collector.on('collect', async (buttonInteraction) => {
             if (buttonInteraction.customId === 'refresh') {
-                await buttonInteraction.deferUpdate(); // Defer the interaction immediately
-
+                await buttonInteraction.deferUpdate(); // Defer the update
+                refreshId++;
                 const newImageUrl = await fetchImage();
                 const newImageBig = newImageUrl.replace('s.jpg', '.jpg');
                 if (!newImageBig) {
@@ -77,9 +78,14 @@ module.exports = {
                     .setImage(newImageBig)
                     .setTimestamp()
                     .setDescription(`[Image](${newImageBig})`)
-                    .setFooter({ text: `Source: 4chan/b` });
+                    .setFooter({ text: `Powered by: 4chan/b` });
 
-                await buttonInteraction.editReply({ embeds: [newEmbed] });
+                refreshButton.setLabel(`Refresh ${refreshId}/5`);
+                if (refreshId === 5) {
+                    refreshButton.setDisabled(true);
+                }
+
+                await buttonInteraction.editReply({ embeds: [newEmbed], components: [new ActionRowBuilder().addComponents(refreshButton)] });
             }
         });
 
