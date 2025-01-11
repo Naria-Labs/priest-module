@@ -31,6 +31,7 @@ function makeSubgroup(name) {
 }
 
 
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('dyntime')
