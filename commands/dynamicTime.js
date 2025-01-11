@@ -24,7 +24,7 @@ function makeSubgroup(name) {
                         option
                             .setName('timechoice')
                             .setDescription('Choose the time format')
-                            .addChoices(...optionsTime)
+                            .addChoices(optionsTime)
                             .setRequired(true)
                     )
             );
