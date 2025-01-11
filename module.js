@@ -11,5 +11,6 @@ module.exports = {
     require('./commands/help.js'),
     require('./commands/based.js'),
     require('./commands/4chanb.js'),
+    require('./commands/dynamicTime.js'),
   ]
 }
