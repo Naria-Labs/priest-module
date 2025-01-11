@@ -45,7 +45,9 @@ module.exports = {
         }
 
         const unixTime = Math.floor(timeParsed / 1000);
-        const reply = ````<t:${unixTime}:${timechoice}>````; //replay with the dynamic time string that is possible to coppy I hope
+        const reply = `
+        \`\`\`<t:${unixTime}:${timechoice}>
+        \`\`\``; //replay with the dynamic time string that is possible to coppy I hope
 
         await interaction.reply({ content: reply, ephemeral: true });
     },
