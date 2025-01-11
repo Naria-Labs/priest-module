@@ -37,7 +37,7 @@ module.exports = {
     async execute(interaction) {
         const time = interaction.options.getString('time');
         const timechoice = interaction.options.getString('timechoice');
-        const timeParsed = Date.parse(time);
+        const timeParsed = parse(time);
 
         if (isNaN(timeParsed)) {
             await interaction.reply({ content: 'Invalid time format. Please provide a valid date and time.', ephemeral: true });
