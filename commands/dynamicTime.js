@@ -22,7 +22,7 @@ module.exports = {
                 .addStringOption((option) =>
                     option
                         .setName('time')
-                        .setDescription('Set a time')
+                        .setDescription('Set a time if you wanna set time for future say in at the start if you wanna past time say ago at the end')
                         .setRequired(true)
                 )
                 .addStringOption((option) =>
