@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-import { parse } from 'time-speak'
+const { parse } = require('time-speak');
 
 const optionsTime = [
     { name: 'Short Time', value: 't' },
