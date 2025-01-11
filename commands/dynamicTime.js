@@ -1,5 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder, PermissionFlagsBits } = require('discord.js');
-const timespeak = require('time-speak');
+const { SlashCommandBuilder } = require('discord.js');
 
 const optionsTime = [
     { name: 'Short Time', value: 't' },
@@ -11,37 +10,28 @@ const optionsTime = [
     { name: 'Relative', value: 'R' },
 ];
 
-function makeSubgroup(name) {
-    return (group) =>
-        group
-            .setName(name)
-            .setDescription('Time')
-            .addSubcommand((subcommand) =>
-                subcommand
-                    .setName('time')
-                    .setDescription('Get yourself a dynamic time to copy')
-                    .addStringOption((option) =>
-                        option
-                            .setName('timechoice')
-                            .setDescription('Choose the time format')
-                            .addChoices(optionsTime)
-                            .setRequired(true)
-                    )
-            );
-}
-    
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('dyntime')
         .setDescription('Get yourself a dynamic time to copy')
-        .addStringOption((option) =>
-            option
+        .addSubcommand((subcommand) =>
+            subcommand
                 .setName('time')
-                .setDescription('Set a time')
-                .setRequired(true)
-        )
-        .addSubcommandGroup(makeSubgroup('dyntimes')),
+                .setDescription('Get a dynamic time string')
+                .addStringOption((option) =>
+                    option
+                        .setName('time')
+                        .setDescription('Set a time')
+                        .setRequired(true)
+                )
+                .addStringOption((option) =>
+                    option
+                        .setName('timechoice')
+                        .setDescription('Choose the time format')
+                        .addChoices(...optionsTime)
+                        .setRequired(true)
+                )
+        ),
 
     async execute(interaction) {
         const time = interaction.options.getString('time');
