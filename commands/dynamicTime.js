@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
+const timespeak = require('time-speak');
 
 const optionsTime = [
     { name: 'Short Time', value: 't' },
@@ -37,6 +38,11 @@ module.exports = {
         const time = interaction.options.getString('time');
         const timechoice = interaction.options.getString('timechoice');
         const timeParsed = Date.parse(time);
+
+        if (isNaN(timeParsed)) {
+            await interaction.reply({ content: 'Invalid time format. Please provide a valid date and time.', ephemeral: true });
+            return;
+        }
 
         const unixTime = Math.floor(timeParsed / 1000);
         const reply = `The time is <t:${unixTime}:${timechoice}>`;
