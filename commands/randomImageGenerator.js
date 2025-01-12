@@ -108,9 +108,8 @@ module.exports = {
         const replaceColor = randomColor.replace('#', '0x');
 
 		const Embed = new EmbedBuilder()
-			.setColor(`${replaceColor}`)
-			//.setColor(`${randomColor}`)
-			.setTitle(`Random Image ${horny}`)
+			//color blue
+            .setColor(0x3498DB)
 			.setImage(image)
 			.setTimestamp()
 			.setFooter({ text: `Powered api.waifu.pics || ${tags}`});
