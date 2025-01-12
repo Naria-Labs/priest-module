@@ -104,10 +104,11 @@ module.exports = {
 		const parseData = await response.json();
 		const image = parseData.url;
 		//take random color from the discordColors and get hex value
-        const randomColor = discordColors[Math.floor(Math.random() * (discordColors.length - 1 ))].name;
+        const randomColor = discordColors[Math.floor(Math.random() * (discordColors.length - 1 ))].value;
+        const replaceColor = randomColor.replace('#', '0x');
 
 		const Embed = new EmbedBuilder()
-            .setColor(randomColor)
+			.setColor(`${replaceColor}`)
 			//.setColor(`${randomColor}`)
 			.setTitle(`Random Image ${horny}`)
 			.setImage(image)
