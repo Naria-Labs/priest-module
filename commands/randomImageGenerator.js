@@ -104,7 +104,7 @@ module.exports = {
 		const parseData = await response.json();
 		const image = parseData.url;
 		//take random color from the discordColors and get hex value
-        const randomColor = discordColors[Math.floor(Math.random() * discordColors.length)].name;
+        const randomColor = discordColors[Math.floor(Math.random() * (discordColors.length - 1 ))].name;
 
 		const Embed = new EmbedBuilder()
 			.setColor(`${randomColor}`)
