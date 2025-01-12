@@ -92,7 +92,7 @@ module.exports = {
         const Color = start + capitalA + capitalB + capitalC;
 
 		const Embed = new EmbedBuilder()
-			.setColor(`${Color}`)
+			.setColor(0x0099FF)
 			.setTitle(`Random Image ${horny}`)
 			.setImage(image)
 			.setTimestamp()
