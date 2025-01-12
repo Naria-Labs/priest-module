@@ -1,0 +1,70 @@
+name: Auto Deploy module to personal develop bot
+
+on:
+  push:
+    branches:
+      - develop
+jobs:
+  deploy:
+    name: Deploy project
+    permissions:
+      deployments: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull and test
+        uses: appleboy/ssh-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd naria-labs/rzulty-bot-priest/
+            git checkout developPriestDeploy
+            git pull origin developPriestDeploy
+            git submodule update --remote --recursive
+            npm install
+            npm test
+      - name: Update commands
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd naria-labs/rzulty-bot-priest/
+            npm run update-commands
+      - name: Deploy app
+        uses: appleboy/ssh-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd naria-labs/rzulty-bot-priest/
+            pm2 restart develop-priest --update-env
+      - name: Update module version
+        uses: appleboy/ssh-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd naria-labs/rzulty-bot-priest/
+            git config user.name "Naria Labs"
+            git add modules
+            git commit -m "Automated module version update"
+            git push

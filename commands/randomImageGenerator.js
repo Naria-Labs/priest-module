@@ -75,8 +75,24 @@ module.exports = {
 		const parseData = await response.json();
 		const image = parseData.url;
 
+
+		const start = '0x';
+		//random from 0 to FF for each color
+
+
+		const randomColorA = Math.floor(Math.random() * 255);
+		const colorToHexA = randomColorA.toString(16);
+        const capitalA = colorToHexA.toUpperCase();
+		const randomColorB = Math.floor(Math.random() * 255);
+		const colorToHexB = randomColorB.toString(16);
+		const capitalB = colorToHexB.toUpperCase();
+		const randomColorC = Math.floor(Math.random() * 255);
+		const colorToHexC = randomColorC.toString(16);
+		const capitalC = colorToHexC.toUpperCase();
+        const Color = start + capitalA + capitalB + capitalC;
+
 		const Embed = new EmbedBuilder()
-			.setColor(0x0099FF)
+			.setColor(`${Color}`)
 			.setTitle(`Random Image ${horny}`)
 			.setImage(image)
 			.setTimestamp()
