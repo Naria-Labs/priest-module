@@ -75,6 +75,7 @@ module.exports = {
 		const parseData = await response.json();
 		const image = parseData.url;
 
+
 		const start = '0x';
 		//random from 0 to FF for each color
 
@@ -92,6 +93,8 @@ module.exports = {
 
 		const Embed = new EmbedBuilder()
 			.setColor(`${Color}`)
+		const Embed = new EmbedBuilder()
+			.setColor(0x0099FF)
 			.setTitle(`Random Image ${horny}`)
 			.setImage(image)
 			.setTimestamp()
