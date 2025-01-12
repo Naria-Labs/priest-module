@@ -107,7 +107,8 @@ module.exports = {
         const randomColor = discordColors[Math.floor(Math.random() * (discordColors.length - 1 ))].name;
 
 		const Embed = new EmbedBuilder()
-			.setColor(`${randomColor}`)
+            .setColor(randomColor)
+			//.setColor(`${randomColor}`)
 			.setTitle(`Random Image ${horny}`)
 			.setImage(image)
 			.setTimestamp()
