@@ -93,8 +93,6 @@ module.exports = {
 
 		const Embed = new EmbedBuilder()
 			.setColor(`${Color}`)
-		const Embed = new EmbedBuilder()
-			.setColor(0x0099FF)
 			.setTitle(`Random Image ${horny}`)
 			.setImage(image)
 			.setTimestamp()
