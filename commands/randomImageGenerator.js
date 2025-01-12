@@ -14,6 +14,35 @@ const tagsOptionDescriptions = {
 	'nsfw': 'Search of the tags that are in the image generator (all are NSFW)',
 }
 
+//for future reference when I would understand how to get the function out of the file 
+const discordColors = [
+	{ name: 'Default', value: '#000000' },
+	{ name: 'Aqua', value: '#1ABC9C' },
+	{ name: 'DarkAqua', value: '#11806A' },
+	{ name: 'Green', value: '#57F287' },
+	{ name: 'DarkGreen', value: '#1F8B4C' },
+	{ name: 'Blue', value: '#3498DB' },
+	{ name: 'DarkBlue', value: '#206694' },
+	{ name: 'Purple', value: '#9B59B6' },
+	{ name: 'DarkPurple', value: '#71368A' },
+	{ name: 'LuminousVividPink', value: '#E91E63' },
+	{ name: 'DarkVividPink', value: '#AD1457' },
+	{ name: 'Gold', value: '#F1C40F' },
+	{ name: 'DarkGold', value: '#C27C0E' },
+	{ name: 'Orange', value: '#E67E22' },
+	{ name: 'DarkOrange', value: '#A84300' },
+	{ name: 'Red', value: '#ED4245' },
+	{ name: 'DarkRed', value: '#992D22' },
+	{ name: 'Grey', value: '#95A5A6' },
+	{ name: 'DarkGrey', value: '#979C9F' },
+	{ name: 'DarkerGrey', value: '#7F8C8D' },
+	{ name: 'LightGrey', value: '#BCC0C0' },
+	{ name: 'Navy', value: '#34495E' },
+	{ name: 'DarkNavy', value: '#2C3E50' },
+	{ name: 'Yellow', value: '#FFFF00' },
+];
+
+
 const tagsOptionChoices = {
 	'sfw': [
 		{ name: 'waifu', value: 'waifu' },
@@ -74,25 +103,11 @@ module.exports = {
 		const response = await fetch(`https://api.waifu.pics/${horny}/${tags}`);
 		const parseData = await response.json();
 		const image = parseData.url;
-
-
-		const start = '0x';
-		//random from 0 to FF for each color
-
-
-		const randomColorA = Math.floor(Math.random() * 255);
-		const colorToHexA = randomColorA.toString(16);
-        const capitalA = colorToHexA.toUpperCase();
-		const randomColorB = Math.floor(Math.random() * 255);
-		const colorToHexB = randomColorB.toString(16);
-		const capitalB = colorToHexB.toUpperCase();
-		const randomColorC = Math.floor(Math.random() * 255);
-		const colorToHexC = randomColorC.toString(16);
-		const capitalC = colorToHexC.toUpperCase();
-        const Color = start + capitalA + capitalB + capitalC;
+		//take random color from the discordColors and get hex value
+        const randomColor = discordColors[Math.floor(Math.random() * discordColors.length)].name;
 
 		const Embed = new EmbedBuilder()
-			.setColor(0x0099FF)
+			.setColor(`${randomColor}`)
 			.setTitle(`Random Image ${horny}`)
 			.setImage(image)
 			.setTimestamp()
