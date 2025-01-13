@@ -103,10 +103,6 @@ module.exports = {
 		const response = await fetch(`https://api.waifu.pics/${horny}/${tags}`);
 		const parseData = await response.json();
 		const image = parseData.url;
-		//take random color from the discordColors and get hex value
-        const randomColor = discordColors[Math.floor(Math.random() * (discordColors.length - 1 ))].value;
-        const replaceColor = randomColor.replace('#', '0x');
-
 		const Embed = new EmbedBuilder()
 			//color blue
             .setColor(0x3498DB)
