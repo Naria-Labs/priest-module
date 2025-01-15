@@ -12,7 +12,6 @@ module.exports = {
     require('./commands/based.js'),
     require('./commands/4chanb.js'),
     require('./commands/dynamicTime.js'),
-    require('./commands/7tv.js'),
     //random files
     require('./commands/discordCommands.js'),
   ]
