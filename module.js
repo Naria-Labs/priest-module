@@ -12,7 +12,7 @@ module.exports = {
     require('./commands/based.js'),
     require('./commands/4chanb.js'),
     require('./commands/dynamicTime.js'),
-    requite('./commands/7tv.js'),
+    require('./commands/7tv.js'),
     //random files
     require('./commands/discordCommands.js'),
   ]
