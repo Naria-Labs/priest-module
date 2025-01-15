@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ActionRowBuilder, ComponentType, ButtonStyle } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const axios = require('axios');
 
 module.exports = {
@@ -26,30 +26,20 @@ module.exports = {
                 let url;
                 switch (type) {
                     case 'top':
-                        url = 'https://7tv.app/emotes/top';
+                        url = 'https://api.7tv.app/v2/emotes/global';
                         break;
                     case 'trending':
-                        url = 'https://7tv.app/emotes/trending';
+                        url = 'https://api.7tv.app/v2/emotes/trending';
                         break;
                     case 'new':
-                        url = 'https://7tv.app/emotes/new';
+                        url = 'https://api.7tv.app/v2/emotes/recent';
                         break;
                     default:
                         return null;
                 }
 
                 const response = await axios.get(url);
-                const $ = cheerio.load(response.data);
-                const emotes = [];
-
-                $('div.emote-card').each((i, element) => {
-                    const emoteName = $(element).find('div.emote-name').text();
-                    const emoteId = $(element).attr('data-id');
-                    const emoteUrl = `https://7tv.app/emotes/${emoteId}`;
-                    emotes.push({ name: emoteName, url: emoteUrl });
-                });
-
-                return emotes;
+                return response.data;
             } catch (error) {
                 console.error('Error fetching emotes:', error);
                 return null;
@@ -65,7 +55,7 @@ module.exports = {
 
         const emoteFields = emotes.slice(0, 10).map(emote => ({
             name: emote.name,
-            value: `[Link](${emote.url})`,
+            value: `[Link](https://7tv.app/emotes/${emote.id})`,
             inline: true,
         }));
 
