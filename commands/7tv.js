@@ -27,7 +27,7 @@ module.exports = {
                 let url;
                 switch (type) {
                     case 'top':
-                        url = 'https://7tv.app/emotes/top';
+                        url = 'https://7tv.app/emotes';
                         break;
                     case 'trending':
                         url = 'https://7tv.app/emotes/trending';
@@ -43,11 +43,11 @@ module.exports = {
                 const $ = cheerio.load(response.data);
                 const emotes = [];
 
-                $('div.emotes.svelte-j3jjv6.scrollable-on-desktop a').each((i, element) => {
+                $('div.emotes.svelte-j3jjv6.scrollable-on-desktop a.emote').each((i, element) => {
                     if (i >= 10) return false; // Limit to 10 emotes
                     const emoteUrl = `https://7tv.app${$(element).attr('href')}`;
-                    const emoteName = $(element).find('div.emote-name').text();
-                    const emoteImage = $(element).find('img.svelte-1d7o56f').attr('src');
+                    const emoteName = $(element).find('span.name').text();
+                    const emoteImage = $(element).find('img.image').attr('src');
                     emotes.push({ name: emoteName, url: emoteUrl, image: emoteImage });
                 });
 
@@ -80,5 +80,3 @@ module.exports = {
         await interaction.editReply({ embeds: [embed] });
     },
 };
-
-
