@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const axios = require('axios');
+const cheerio = require('cheerio');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -26,20 +27,31 @@ module.exports = {
                 let url;
                 switch (type) {
                     case 'top':
-                        url = 'https://api.7tv.app/v2/emotes/global';
+                        url = 'https://7tv.app/emotes/top';
                         break;
                     case 'trending':
-                        url = 'https://api.7tv.app/v2/emotes/trending';
+                        url = 'https://7tv.app/emotes/trending';
                         break;
                     case 'new':
-                        url = 'https://api.7tv.app/v2/emotes/recent';
+                        url = 'https://7tv.app/emotes/new';
                         break;
                     default:
                         return null;
                 }
 
                 const response = await axios.get(url);
-                return response.data;
+                const $ = cheerio.load(response.data);
+                const emotes = [];
+
+                $('div.emotes.svelte-j3jjv6.scrollable-on-desktop a').each((i, element) => {
+                    if (i >= 10) return false; // Limit to 10 emotes
+                    const emoteUrl = `https://7tv.app${$(element).attr('href')}`;
+                    const emoteName = $(element).find('div.emote-name').text();
+                    const emoteImage = $(element).find('img.svelte-1d7o56f').attr('src');
+                    emotes.push({ name: emoteName, url: emoteUrl, image: emoteImage });
+                });
+
+                return emotes;
             } catch (error) {
                 console.error('Error fetching emotes:', error);
                 return null;
@@ -53,19 +65,20 @@ module.exports = {
             return;
         }
 
-        const emoteFields = emotes.slice(0, 10).map(emote => ({
-            name: emote.name,
-            value: `[Link](https://7tv.app/emotes/${emote.id})`,
-            inline: true,
-        }));
-
         const embed = new EmbedBuilder()
             .setColor(0x00ff00)
             .setTitle(`7tv Emotes - ${type.charAt(0).toUpperCase() + type.slice(1)}`)
-            .addFields(emoteFields)
             .setTimestamp()
             .setFooter({ text: `Type: ${type}` });
+
+        emotes.forEach(emote => {
+            embed.addFields({ name: emote.name, value: `[Link](${emote.url})`, inline: true });
+        });
+
+        embed.setImage(emotes[0].image);
 
         await interaction.editReply({ embeds: [embed] });
     },
 };
+
+
