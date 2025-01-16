@@ -24,5 +24,5 @@ const discordColors = [
 	{ name: 'DarkNavy', value: '#2C3E50' },
 	{ name: 'Yellow', value: '#FFFF00' },
 ];
-
+//more to come
 module.exports = discordColors;
