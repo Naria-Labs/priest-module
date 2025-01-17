@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, MessageActionRow, MessageButton } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -9,35 +9,45 @@ module.exports = {
                 .setDescription('Set the amount of messages you want to delete')
                 .setMinValue(1)
                 .setRequired(true)
+        )
+        .addStringOption(option =>
+            option.setName('user')
+                .setDescription('Set the user you want to delete messages from')
+                .setRequired(false)
         ),
 
     async execute(interaction) {
         const number = interaction.options.getInteger('number');
+        const user = interaction.options.getString('user');
 
-        const row = new MessageActionRow()
+        const row = new ActionRowBuilder()
             .addComponents(
-                new MessageButton()
+                new ButtonBuilder()
                     .setCustomId('confirm')
                     .setLabel('Confirm')
-                    .setStyle('DANGER'),
-                new MessageButton()
+                    .setStyle(ButtonStyle.Danger),
+                new ButtonBuilder()
                     .setCustomId('cancel')
                     .setLabel('Cancel')
-                    .setStyle('SECONDARY')
+                    .setStyle(ButtonStyle.Secondary)
             );
 
-        await interaction.reply({ content: `Are you sure you want to delete ${number} messages?`, components: [row], ephemeral: true });
+        await interaction.reply({ content: `Are you sure you want to delete ${number} messages${user ? ` from ${user}` : ''}?`, components: [row], ephemeral: true });
 
         const filter = i => i.customId === 'confirm' || i.customId === 'cancel';
         const collector = interaction.channel.createMessageComponentCollector({ filter, time: 15000 });
 
         collector.on('collect', async i => {
             if (i.customId === 'confirm') {
-                const messages = await interaction.channel.messages.fetch({ limit: number });
+                let messages = await interaction.channel.messages.fetch({ limit: number });
+
+                if (user) {
+                    messages = messages.filter(msg => msg.author.username === user);
+                }
 
                 await interaction.channel.bulkDelete(messages, true)
                     .then(deletedMessages => {
-                        i.update({ content: `Successfully deleted ${deletedMessages.size} messages.`, components: [] });
+                        i.update({ content: `Successfully deleted ${deletedMessages.size} messages${user ? ` from ${user}` : ''}.`, components: [] });
                     })
                     .catch(error => {
                         console.error('Error deleting messages:', error);
