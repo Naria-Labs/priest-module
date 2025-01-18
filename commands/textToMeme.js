@@ -83,7 +83,7 @@ module.exports = {
 
         await interaction.deferReply({ ephemeral: true });
         for (const message of messages) {
-            await interaction.channel.send(message);
+            await interaction.followUp({ content: message, ephemeral: true });
         }
     },
 };
