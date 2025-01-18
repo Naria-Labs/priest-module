@@ -9,11 +9,6 @@ module.exports = {
                 .setDescription('Set the amount of messages you want to delete')
                 .setMinValue(1)
                 .setRequired(true)
-        )
-        .addStringOption(option =>
-            option.setName('user')
-                .setDescription('Set the user you want to delete messages from')
-                .setRequired(false)
         ),
 
     async execute(interaction) {
