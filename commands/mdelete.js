@@ -42,7 +42,7 @@ module.exports = {
 
                 await interaction.channel.bulkDelete(messages, true)
                     .then(deletedMessages => {
-                        i.update({ content: `Successfully deleted ${deletedMessages.size} messages${user ? ` from ${user}` : ''}.`, components: [] });
+                        i.update({ content: `Successfully deleted ${deletedMessages.size} messages.`, components: [] });
                     })
                     .catch(error => {
                         console.error('Error deleting messages:', error);
@@ -55,7 +55,7 @@ module.exports = {
 
         collector.on('end', collected => {
             if (collected.size === 0) {
-                interaction.editReply({ content: 'Message deletion timed out.', components: [] });
+                interaction.editReply({ content: 'Message deletion timed out (were you sleeping or what?).', components: [] });
             }
         });
     },
