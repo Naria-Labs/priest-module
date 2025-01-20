@@ -17,8 +17,8 @@ module.exports = {
 
     async execute(interaction) {
         const number = interaction.options.getInteger('number');
-        const userMentioned = interaction.options.getMember('user');
         const user = interaction.options.getUser('user');
+        const userMentioned = interaction.member;
 
         const row = new ActionRowBuilder()
             .addComponents(
@@ -36,7 +36,7 @@ module.exports = {
         const hasGoodRole = goodRoles.some(role => userMentioned.roles.cache.has(role));
         if (!hasGoodRole) {
             return interaction.reply({
-                content: `You can't delete messages ${userMentioned} because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
+                content: `You can't delete messages because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
                 ephemeral: true,
             });
         } else {
