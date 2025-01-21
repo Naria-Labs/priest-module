@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { goodRoles, hasGoodRole } = require('./discordCommands');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -32,15 +33,14 @@ module.exports = {
                     .setStyle(ButtonStyle.Secondary)
             );
 
-        const goodRoles = ['632250692509237268', '632244499292225583', '632244879216345138'];
-        const hasGoodRole = goodRoles.some(role => userMentioned.roles.cache.has(role));
-        if (!hasGoodRole) {
+        if (!hasGoodRole(userMentioned)) {
             return interaction.reply({
                 content: `You can't delete messages because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
                 ephemeral: true,
-            });
+            }).catch(console.error);
         } else {
-            await interaction.reply({ content: `Are you sure you want to delete ${number} messages${user ? ` from ${user.username}` : ''}?`, components: [row], ephemeral: true });
+            await interaction.reply({ content: `Are you sure you want to delete ${number} messages${user ? ` from ${user.username}` : ''}?`, components: [row], ephemeral: true })
+                .catch(console.error);
 
             const filter = i => i.customId === 'confirm' || i.customId === 'cancel';
             const collector = interaction.channel.createMessageComponentCollector({ filter, time: 15000 });
@@ -68,7 +68,8 @@ module.exports = {
 
             collector.on('end', collected => {
                 if (collected.size === 0) {
-                    interaction.editReply({ content: 'Message deletion timed out (were you sleeping or what?).', components: [] });
+                    interaction.editReply({ content: 'Message deletion timed out.', components: [] })
+                        .catch(console.error);
                 }
             });
         }

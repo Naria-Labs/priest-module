@@ -24,5 +24,14 @@ const discordColors = [
 	{ name: 'DarkNavy', value: '#2C3E50' },
 	{ name: 'Yellow', value: '#FFFF00' },
 ];
+//moderator, full part admin, admin roles
+const goodRoles = ['632250692509237268', '632244499292225583', '632244879216345138'];
+
+function hasGoodRole(user) {
+    return goodRoles.some(role => user.roles.cache.has(role));
+}
+
+
 //more to come
-module.exports = discordColors;
+module.exports = { discordColors };
+module.exports = { goodRoles, hasGoodRole };
