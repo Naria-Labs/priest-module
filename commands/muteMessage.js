@@ -1,4 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
+const { hasGoodRole, goodRoles } = require('./discordCommands');
+
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -18,7 +20,7 @@ module.exports = {
 	async execute(interaction) {
 		const userMentioned = interaction.options.getMember('user');
 		const time = interaction.options.getInteger('time');
-        const userID = interaction.member.id;
+		const userID = interaction.member.id;
 		const unixTime = Math.floor((Date.now() / 1000) + `${time}` * 60);
 
 		if (!userMentioned.voice.channel) {
@@ -27,10 +29,8 @@ module.exports = {
 				ephemeral: true
 			});
 		} 
-		const goodRoles = ['632250692509237268', '632244499292225583', '632244879216345138'];
-		const hasGoodRole = goodRoles.some(role => userMentioned.roles.cache.has(role));
 
-		if (!hasGoodRole) {
+		if (!hasGoodRole(userMentioned)) {
 			return interaction.reply({
 				content: `<@${userID}>, you can't server mute ${userMentioned} because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
 				ephemeral: true,
