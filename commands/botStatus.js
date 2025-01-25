@@ -9,6 +9,14 @@ const botStatus = [
     { name: 'Invisible', value: 'invisible' },
 ];
 
+const botActivity = [
+    { name: 'Playing', value: 'PLAYING' },
+    { name: 'Streaming', value: 'STREAMING' },
+    { name: 'Listening', value: 'LISTENING' },
+    { name: 'Watching', value: 'WATCHING' },
+    { name: 'Competing', value: 'COMPETING' },
+    ];
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('bstat')
@@ -24,6 +32,13 @@ module.exports = {
                         .setRequired(true)
                         .addChoices(...botStatus)
                 )
+                .addStringOption((option) =>
+                   option
+                        .setName('activity')
+                        .setDescription('Set the bot activity')
+                        .addChoices(...botActivity)
+                        .setRequired(false)
+                )
         ),
 
     async execute(interaction) {
@@ -36,7 +51,8 @@ module.exports = {
 
         const status = interaction.options.getString('status');
         await interaction.client.user.setStatus(status);
-
+        const statusActivity = interaction.options.getString('activity');
+        await interaction.client.user.setActivity(statusActivity, { type: statusActivity });
         await interaction.reply({
             content: 'Bot status has been set',
             ephemeral: true,
