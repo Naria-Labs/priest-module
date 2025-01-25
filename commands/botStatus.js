@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { EmbedBuilder } = require('discord.js');
 const { hasGoodRole, goodRoles } = require('./discordCommands');
+const { ActivityType } = require('discord.js');
 
 const botStatus = [
     { name: 'Online', value: 'online' },
@@ -10,11 +11,11 @@ const botStatus = [
 ];
 
 const botActivity = [
-    { name: 'Playing', value: 'PLAYING' },
-    { name: 'Streaming', value: 'STREAMING' },
-    { name: 'Listening', value: 'LISTENING' },
-    { name: 'Watching', value: 'WATCHING' },
-    { name: 'Competing', value: 'COMPETING' },
+    { name: 'Playing', value: 'playing' },
+    { name: 'Streaming', value: 'streaming' },
+    { name: 'Listening', value: 'listening' },
+    { name: 'Watching', value: 'watching' },
+    { name: 'Competing', value: 'competing' },
 ];
 
 module.exports = {
@@ -42,7 +43,7 @@ module.exports = {
                 .addStringOption((option) =>
                     option
                         .setName('details')
-                        .setDescription('Details for the activity ')
+                        .setDescription('Details for the activity')
                         .setRequired(false)
                 )
         ),
@@ -61,7 +62,7 @@ module.exports = {
         const activity = interaction.options.getString('activity');
         const details = interaction.options.getString('details');
         if (activity) {
-            await interaction.client.user.setActivity(details ? `${activity} ${details}` : activity, { type: activity });
+            await interaction.client.user.setActivity(details ? details : '', { type: ActivityType[activity] });
         }
 
         await interaction.reply({
