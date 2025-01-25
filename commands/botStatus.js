@@ -37,6 +37,10 @@ module.exports = {
         const status = interaction.options.getString('status');
         await interaction.client.user.setStatus(status);
 
-        await interaction.reply('Bot status has been set');
+        await interaction.reply({
+            content: 'Bot status has been set',
+            ephemeral: true,
+            });
+
     },
 };
