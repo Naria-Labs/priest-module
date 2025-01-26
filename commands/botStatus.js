@@ -58,7 +58,6 @@ module.exports = {
 
         const status = interaction.options.getString('status');
         await interaction.client.user.setStatus(status);
-
         const activity = interaction.options.getString('activity');
         const details = interaction.options.getString('details');
         if (activity) {
