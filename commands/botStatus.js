@@ -1,12 +1,21 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { EmbedBuilder } = require('discord.js');
 const { hasGoodRole, goodRoles } = require('./discordCommands');
+const { ActivityType } = require('discord.js');
 
 const botStatus = [
     { name: 'Online', value: 'online' },
     { name: 'Idle', value: 'idle' },
     { name: 'Do Not Disturb', value: 'dnd' },
     { name: 'Invisible', value: 'invisible' },
+];
+
+const botActivity = [
+    { name: 'Playing', value: 'playing' },
+    { name: 'Streaming', value: 'streaming' },
+    { name: 'Listening', value: 'listening' },
+    { name: 'Watching', value: 'watching' },
+    { name: 'Competing', value: 'competing' },
 ];
 
 module.exports = {
@@ -24,6 +33,19 @@ module.exports = {
                         .setRequired(true)
                         .addChoices(...botStatus)
                 )
+                .addStringOption((option) =>
+                    option
+                        .setName('activity')
+                        .setDescription('Set the bot activity')
+                        .setRequired(false)
+                        .addChoices(...botActivity)
+                )
+                .addStringOption((option) =>
+                    option
+                        .setName('details')
+                        .setDescription('Details for the activity')
+                        .setRequired(false)
+                )
         ),
 
     async execute(interaction) {
@@ -36,11 +58,15 @@ module.exports = {
 
         const status = interaction.options.getString('status');
         await interaction.client.user.setStatus(status);
+        const activity = interaction.options.getString('activity');
+        const details = interaction.options.getString('details');
+        if (activity) {
+            await interaction.client.user.setActivity(details ? details : '', { type: ActivityType[activity] });
+        }
 
         await interaction.reply({
             content: 'Bot status has been set',
             ephemeral: true,
-            });
-
+        });
     },
 };
