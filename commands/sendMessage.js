@@ -23,7 +23,7 @@ module.exports = {
 
         if (!hasGoodRole(interaction.member)) {
             return interaction.reply({
-                content: `<@${userID}>, you can't use this comannd ${userMentioned} because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
+                content: `<@${userID}>, you can't use this comannd because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
                 ephemeral: true,
             });
         }
