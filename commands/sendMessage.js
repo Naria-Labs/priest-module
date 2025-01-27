@@ -14,6 +14,8 @@ module.exports = {
                 .setRequired(true)),
 
     async execute(interaction) {
+        await interaction.deferReply({ ephemeral: true });
+
         const userMentioned = interaction.options.getUser('user');
         const userID = userMentioned.id;
         const message = interaction.options.getString('message');
@@ -40,7 +42,7 @@ module.exports = {
             const dmChannel = await user.createDM();
             await dmChannel.send({ embeds: [messageToUser], components: [buttons] });
 
-            await interaction.reply({ content: 'Message sent successfully! Waiting for reply...', ephemeral: true });
+            await interaction.editReply({ content: 'Message sent successfully! Waiting for reply...', ephemeral: true });
 
             const filter = i => i.customId === 'reply' && i.user.id === userID;
             const collector = dmChannel.createMessageComponentCollector({ filter, componentType: ComponentType.Button, time: 60000 });
@@ -81,9 +83,7 @@ module.exports = {
             });
         } catch (error) {
             console.error('Error sending message:', error);
-            await interaction.reply({ content: `Failed to send the message. Error: ${error.message}`, ephemeral: true });
+            await interaction.editReply({ content: `Failed to send the message. Error: ${error.message}`, ephemeral: true });
         }
     },
 };
-
-
