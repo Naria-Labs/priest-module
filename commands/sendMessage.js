@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ComponentType } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ComponentType } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -27,33 +27,56 @@ module.exports = {
             )
             .setTimestamp();
 
+        const buttons = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('reply')
+                    .setLabel('Reply')
+                    .setStyle('PRIMARY')
+            );
+
         try {
             const user = await interaction.client.users.fetch(userID);
             const dmChannel = await user.createDM();
-            await dmChannel.send({ embeds: [messageToUser] });
+            await dmChannel.send({ embeds: [messageToUser], components: [buttons] });
 
             await interaction.reply({ content: 'Message sent successfully! Waiting for reply...', ephemeral: true });
 
-            const filter = response => response.author.id === userID;
-            const collector = dmChannel.createMessageCollector({ filter, max: 1, time: 60000 });
+            const filter = i => i.customId === 'reply' && i.user.id === userID;
+            const collector = dmChannel.createMessageComponentCollector({ filter, componentType: ComponentType.Button, time: 60000 });
 
-            collector.on('collect', async response => {
-                console.log(`Collected message: ${response.content}`);
-                const replyMessage = new EmbedBuilder()
-                    .setColor(0x003253)
-                    .setTitle(`You got a reply from ${response.author.tag}`)
-                    .addFields(
-                        { name: 'Reply', value: response.content, inline: true },
-                    )
-                    .setTimestamp();
+            collector.on('collect', async i => {
+                if (i.customId === 'reply') {
+                    await i.reply({ content: 'Please type your reply:', ephemeral: true });
 
-                await userThatSent.send({ embeds: [replyMessage] });
-                await response.reply({ content: `Your message is "${response.content}" and it has been sent!`, ephemeral: true });
+                    const messageFilter = response => response.author.id === userID;
+                    const messageCollector = dmChannel.createMessageCollector({ filter: messageFilter, max: 1, time: 60000 });
+
+                    messageCollector.on('collect', async response => {
+                        console.log(`Collected message: ${response.content}`);
+                        const replyMessage = new EmbedBuilder()
+                            .setColor(0x003253)
+                            .setTitle(`You got a reply from ${response.author.tag}`)
+                            .addFields(
+                                { name: 'Reply', value: response.content, inline: true },
+                            )
+                            .setTimestamp();
+
+                        await userThatSent.send({ embeds: [replyMessage] });
+                        await response.reply({ content: `Your message is "${response.content}" and it has been sent!`, ephemeral: true });
+                    });
+
+                    messageCollector.on('end', collected => {
+                        if (collected.size === 0) {
+                            dmChannel.send('You did not reply in time.');
+                        }
+                    });
+                }
             });
 
             collector.on('end', collected => {
                 if (collected.size === 0) {
-                    dmChannel.send('You did not reply in time.');
+                    dmChannel.send('You did not click the reply button in time.');
                 }
             });
         } catch (error) {
