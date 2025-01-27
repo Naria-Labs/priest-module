@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { EmbedBuilder } = require('discord.js');
+const { hasGoodRole, goodRoles } = require('./discordCommands');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -19,6 +20,13 @@ module.exports = {
         const userID = userMentioned.id;
         const message = interaction.options.getString('message');
         const userThatSent = interaction.user;
+
+        if (!hasGoodRole(interaction.member)) {
+            return interaction.reply({
+                content: `<@${userID}>, you can't use this comannd because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
+                ephemeral: true,
+            });
+        }
 
         const messageToUser = new EmbedBuilder()
             .setColor(0x003253)
