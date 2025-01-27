@@ -33,11 +33,11 @@ module.exports = {
                 new ButtonBuilder()
                     .setCustomId('reply')
                     .setLabel('Reply')
-                    .setStyle('PRIMARY'),
+                    .setStyle('Primary'),
                 new ButtonBuilder()
                     .setCustomId('send')
                     .setLabel('Send')
-                    .setStyle('PRIMARY'),
+                    .setStyle('Primary'),
             );
 
         const messageToUser = new EmbedBuilder()
