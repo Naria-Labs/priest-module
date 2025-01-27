@@ -21,7 +21,7 @@ module.exports = {
         const userThatSent = interaction.user;
 
         const messageToUser = new EmbedBuilder()
-            .setColor('blue')
+            .setColor(0x003253)
             .setTitle(`You got a new mail from ${userThatSent.tag}`)
             .addFields(
                 { name: 'Message', value: message, inline: true },
