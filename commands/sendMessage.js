@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
-const { EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ComponentType } = require('discord.js');
 const { hasGoodRole, goodRoles } = require('./discordCommands');
 
 module.exports = {
@@ -23,10 +22,23 @@ module.exports = {
 
         if (!hasGoodRole(interaction.member)) {
             return interaction.reply({
-                content: `<@${userID}>, you can't use this comannd because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
+                content: `You can't use this command because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
                 ephemeral: true,
             });
         }
+
+        //Add buttons to the message to allow the user to reply to the message and send it to the user that sent the message
+        const buttons = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('reply')
+                    .setLabel('Reply')
+                    .setStyle('PRIMARY'),
+                new ButtonBuilder()
+                    .setCustomId('send')
+                    .setLabel('Send')
+                    .setStyle('PRIMARY'),
+            );
 
         const messageToUser = new EmbedBuilder()
             .setColor(0x003253)
@@ -38,11 +50,50 @@ module.exports = {
 
         try {
             const user = await interaction.client.users.fetch(userID);
-            await user.send({ embeds: [messageToUser] });
+            const sentMessage = await user.send({ embeds: [messageToUser], components: [buttons] });
             await interaction.reply({ content: 'Message sent successfully!', ephemeral: true });
+
+            const filter = i => i.customId === 'reply' && i.user.id === userID;
+            const collector = sentMessage.createMessageComponentCollector({ filter, componentType: ComponentType.Button, time: 60000 });
+
+            collector.on('collect', async i => {
+                if (i.customId === 'reply') {
+                    await i.reply({ content: 'Please type your reply:', ephemeral: true });
+
+                    const filter = response => response.author.id === userID;
+                    const replyCollector = i.channel.createMessageCollector({ filter, time: 60000 });
+
+                    replyCollector.on('collect', async response => {
+                        const replyMessage = new EmbedBuilder()
+                            .setColor(0x003253)
+                            .setTitle(`You got a reply from ${response.author.tag}`)
+                            .addFields(
+                                { name: 'Reply', value: response.content, inline: true },
+                            )
+                            .setTimestamp();
+
+                        await userThatSent.send({ embeds: [replyMessage] });
+                        await response.reply({ content: 'Your reply has been sent!', ephemeral: true });
+                        replyCollector.stop();
+                    });
+
+                    replyCollector.on('end', collected => {
+                        if (collected.size === 0) {
+                            i.followUp({ content: 'You did not reply in time.', ephemeral: true });
+                        }
+                    });
+                }
+            });
+
+            collector.on('end', collected => {
+                if (collected.size === 0) {
+                    sentMessage.edit({ components: [] });
+                }
+            });
         } catch (error) {
             console.error('Error sending message:', error);
             await interaction.reply({ content: 'Failed to send the message.', ephemeral: true });
         }
     },
 };
+
