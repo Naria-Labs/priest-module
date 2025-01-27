@@ -29,12 +29,13 @@ module.exports = {
 
         try {
             const user = await interaction.client.users.fetch(userID);
-            await user.send({ embeds: [messageToUser] });
+            const dmChannel = await user.createDM();
+            await dmChannel.send({ embeds: [messageToUser] });
 
             await interaction.reply({ content: 'Message sent successfully! Waiting for reply...', ephemeral: true });
 
             const filter = response => response.author.id === userID;
-            const collector = user.dmChannel.createMessageCollector({ filter, max: 1, time: 60000 });
+            const collector = dmChannel.createMessageCollector({ filter, max: 1, time: 60000 });
 
             collector.on('collect', async response => {
                 console.log(`Collected message: ${response.content}`);
@@ -52,7 +53,7 @@ module.exports = {
 
             collector.on('end', collected => {
                 if (collected.size === 0) {
-                    user.send('You did not reply in time.');
+                    dmChannel.send('You did not reply in time.');
                 }
             });
         } catch (error) {
@@ -61,4 +62,5 @@ module.exports = {
         }
     },
 };
+
 
