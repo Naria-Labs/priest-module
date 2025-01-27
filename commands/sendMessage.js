@@ -1,5 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ComponentType } = require('discord.js');
-const { hasGoodRole, goodRoles } = require('./discordCommands');
+const { SlashCommandBuilder, EmbedBuilder, ComponentType } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -20,13 +19,6 @@ module.exports = {
         const message = interaction.options.getString('message');
         const userThatSent = interaction.user;
 
-        if (!hasGoodRole(interaction.member)) {
-            return interaction.reply({
-                content: `You can't use this command because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
-                ephemeral: true,
-            });
-        }
-
         const messageToUser = new EmbedBuilder()
             .setColor(0x003253)
             .setTitle(`You got a new mail from ${userThatSent.tag}`)
@@ -42,7 +34,7 @@ module.exports = {
             await interaction.reply({ content: 'Message sent successfully! Waiting for reply...', ephemeral: true });
 
             const filter = response => response.author.id === userID;
-            const collector = user.dmChannel.createMessageCollector({ filter, max: 1, time: 60000 });
+            const collector = sentMessage.channel.createMessageCollector({ filter, max: 1, time: 60000 });
 
             collector.on('collect', async response => {
                 console.log(`Collected message: ${response.content}`);
