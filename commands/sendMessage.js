@@ -45,6 +45,7 @@ module.exports = {
             const collector = user.dmChannel.createMessageCollector({ filter, max: 1, time: 60000 });
 
             collector.on('collect', async response => {
+                console.log(`Collected message: ${response.content}`);
                 const replyMessage = new EmbedBuilder()
                     .setColor(0x003253)
                     .setTitle(`You got a reply from ${response.author.tag}`)
@@ -64,7 +65,7 @@ module.exports = {
             });
         } catch (error) {
             console.error('Error sending message:', error);
-            await interaction.reply({ content: 'Failed to send the message.', ephemeral: true });
+            await interaction.reply({ content: `Failed to send the message. Error: ${error.message}`, ephemeral: true });
         }
     },
 };
