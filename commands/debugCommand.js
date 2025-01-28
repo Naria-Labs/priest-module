@@ -9,6 +9,10 @@ module.exports = {
 		.setDescription('Execute a shell command'),
 
 	async execute(interaction) {
+		const userMentioned = interaction.options.getUser('user');
+		const userID = userMentioned.id;
+
+
 		if (!hasGoodRole(interaction.member)) {
 			return interaction.reply({
 				content: `<@${userID}>, you can't use this comannd because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
@@ -16,7 +20,7 @@ module.exports = {
 			});
 		}
 
-		const command = 'pm2 log develop-priest --lines 100 --nostream';
+		const command = 'pm2 log develop-priest --lines 1000 --nostream';
 
 		//Log the current working directory
 		const currentDir = process.cwd();
