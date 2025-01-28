@@ -35,7 +35,7 @@ module.exports = {
                 ephemeral: true,
             }).catch(console.error);
         } else {
-            await interaction.reply({ content: `Are you sure you want to delete ${number} messages ${user} ?`, components: [row], ephemeral: true })
+            await interaction.reply({ content: `Are you sure you want to delete ${number} messages ${userMentioned} ?`, components: [row], ephemeral: true })
                 .catch(console.error);
 
             const filter = i => i.customId === 'confirm' || i.customId === 'cancel';
