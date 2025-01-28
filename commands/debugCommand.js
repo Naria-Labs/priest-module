@@ -1,8 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { EmbedBuilder } = require('discord.js');
 const { exec } = require('child_process');
-
-const allowedUsers = ['214695518566219777', '183555639895654404'];
+const { admins } = require('./discordCommands');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -12,7 +11,7 @@ module.exports = {
 	async execute(interaction) {
 		const userID = interaction.user.id;
 
-		if (!allowedUsers.includes(userID)) {
+		if (!admins.includes(userID)) {
 			return interaction.reply({
 				content: `You don't have permission to use this command.`,
 				ephemeral: true,

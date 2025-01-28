@@ -31,7 +31,9 @@ function hasGoodRole(user) {
     return goodRoles.some(role => user.roles.cache.has(role));
 }
 
+const admins = ['214695518566219777', '183555639895654404'];
 
 //more to come
 module.exports = { discordColors };
 module.exports = { goodRoles, hasGoodRole };
+module.exports = { admins };
