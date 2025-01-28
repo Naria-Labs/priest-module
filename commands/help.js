@@ -7,7 +7,7 @@ module.exports = {
 
     async execute(interaction) {
         const commands = Array.from(interaction.client.commands.values());
-        const commandsPerPage = 10; // 2 rows with 5 commands each
+        const commandsPerPage = 10; //2 rows with 5 commands each
         let currentPage = 0;
 
         const generateEmbed = (page) => {
