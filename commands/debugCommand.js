@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { EmbedBuilder } = require('discord.js');
 const { exec } = require('child_process');
-const { goodRoles, hasGoodRole } = require('./discordCommands'); }
+const { goodRoles, hasGoodRole } = require('./discordCommands');
 
 module.exports = {
 	data: new SlashCommandBuilder()
