@@ -8,13 +8,13 @@ module.exports = {
 		.setDescription('Execute a shell command'),
 
 	async execute(interaction) {
-		const command = 'pm2 log develop-priest --lines 100';
+		const command = 'pm2 log develop-priest --lines 100 --nostream';
 
-		// Log the current working directory
+		//Log the current working directory
 		const currentDir = process.cwd();
 		console.log(`Current working directory: ${currentDir}`);
 
-		// Reply with the current working directory for debugging
+		//Reply with the current working directory for debugging
 		await interaction.reply(`Executing command: \`${command}\` in directory: \`${currentDir}\``);
 
 		exec(command, (error, stdout, stderr) => {
