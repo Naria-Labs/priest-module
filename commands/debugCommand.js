@@ -10,7 +10,7 @@ module.exports = {
 		.setDescription('Debug command for last 2k chars'),
 
 	async execute(interaction) {
-		const dirPath = path.join(__dirname, 'naria-labs/rzulty-bot-priest');
+		const dirPath = '/home/debian/naria-labs/rzulty-bot-priest'; // Use the absolute path
 
 		if (!fs.existsSync(dirPath)) {
 			return interaction.reply(`Error: Directory ${dirPath} does not exist.`);
