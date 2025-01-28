@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { EmbedBuilder } = require('discord.js');
 const { exec } = require('child_process');
+const { goodRoles, hasGoodRole } = require('./discordCommands'); }
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -8,6 +9,13 @@ module.exports = {
 		.setDescription('Execute a shell command'),
 
 	async execute(interaction) {
+		if (!hasGoodRole(interaction.member)) {
+			return interaction.reply({
+				content: `<@${userID}>, you can't use this comannd because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
+				ephemeral: true,
+			});
+		}
+
 		const command = 'pm2 log develop-priest --lines 100 --nostream';
 
 		//Log the current working directory
