@@ -4,18 +4,24 @@ const { exec } = require('child_process');
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('dcomm')
-		.setDescription('Debug command for last 2k chars'),
+		.setName('exec')
+		.setDescription('Execute a shell command')
+		.addStringOption(option =>
+			option.setName('command')
+				.setDescription('The shell command to execute')
+				.setRequired(true)),
 
 	async execute(interaction) {
+		const command = interaction.options.getString('command');
+
 		//Log the current working directory
 		const currentDir = process.cwd();
 		console.log(`Current working directory: ${currentDir}`);
 
 		//Reply with the current working directory for debugging
-		await interaction.reply(`Current working directory: ${currentDir}`);
+		await interaction.reply(`Executing command: \`${command}\` in directory: \`${currentDir}\``);
 
-		exec('cd ../.. && cd naria-labs/rzulty-bot-priest && pm2 log develop-priest --lines 1000', (error, stdout, stderr) => {
+		exec(command, (error, stdout, stderr) => {
 			if (error) {
 				console.error(`exec error: ${error}`);
 				return interaction.followUp(`Error: ${error.message}`);
@@ -27,7 +33,7 @@ module.exports = {
 
 			const basedEmbed = new EmbedBuilder()
 				.setColor('#0099ff')
-				.setTitle('Log Output')
+				.setTitle('Command Output')
 				.setDescription(`\`\`\`${stdout.slice(-1984)}\`\`\``) // Slice to last 1984 characters
 				.setTimestamp();
 
@@ -35,3 +41,4 @@ module.exports = {
 		});
 	},
 };
+
