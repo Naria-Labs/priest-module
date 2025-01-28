@@ -4,15 +4,11 @@ const { exec } = require('child_process');
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('exec')
-		.setDescription('Execute a shell command')
-		.addStringOption(option =>
-			option.setName('command')
-				.setDescription('The shell command to execute')
-				.setRequired(true)),
+		.setName('dcomm')
+		.setDescription('Execute a shell command'),
 
 	async execute(interaction) {
-		const command = interaction.options.getString('command');
+		const command = 'pm2 log develop-priest --lines 1000';
 
 		//Log the current working directory
 		const currentDir = process.cwd();
