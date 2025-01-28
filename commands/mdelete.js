@@ -10,10 +10,6 @@ module.exports = {
                 .setDescription('Set the amount of messages you want to delete')
                 .setMinValue(1)
                 .setRequired(true)
-        )
-        .addUserOption(option =>
-            option.setName('user')
-                .setDescription('Specify a user to delete messages from')
         ),
 
     async execute(interaction) {
@@ -39,7 +35,7 @@ module.exports = {
                 ephemeral: true,
             }).catch(console.error);
         } else {
-            await interaction.reply({ content: `Are you sure you want to delete ${number} messages${user ? ` from ${user.username}` : ''}?`, components: [row], ephemeral: true })
+            await interaction.reply({ content: `Are you sure you want to delete ${number} messages ${user} ?`, components: [row], ephemeral: true })
                 .catch(console.error);
 
             const filter = i => i.customId === 'confirm' || i.customId === 'cancel';
