@@ -23,7 +23,7 @@ module.exports = {
 
         if (!hasGoodRole(interaction.member)) {
             return interaction.reply({
-                content: `<@${userID}>, you can't use this comannd because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
+                content: `<@${userID}>, you can't use this command because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
                 ephemeral: true,
             });
         }
@@ -42,7 +42,7 @@ module.exports = {
             await interaction.reply({ content: 'Message sent successfully!', ephemeral: true });
         } catch (error) {
             console.error('Error sending message:', error);
-            await interaction.reply({ content: 'Failed to send the message.', ephemeral: true });
+            await interaction.reply({ content: `Failed to send the message. Error: ${error.message}`, ephemeral: true });
         }
     },
 };
