@@ -25,7 +25,10 @@ module.exports = {
 		console.log(`Current working directory: ${currentDir}`);
 
 		// Reply with the current working directory for debugging
-		await interaction.reply(`Executing command: \`${command}\` in directory: \`${currentDir}\``);
+		await interaction.reply({
+			content: `Executing command: \`${command}\` in directory: \`${currentDir}\``,
+			ephemeral: true,
+		});
 
 		exec(command, (error, stdout, stderr) => {
 			if (error) {
