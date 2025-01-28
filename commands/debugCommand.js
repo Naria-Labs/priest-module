@@ -37,7 +37,7 @@ module.exports = {
 
             //Split the output into pages
             const lines = stdout.split('\n');
-            const linesPerPage = 10;
+            const linesPerPage = 22;
             const totalPages = Math.ceil(lines.length / linesPerPage);
             let currentPage = 0;
 
