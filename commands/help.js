@@ -36,12 +36,12 @@ module.exports = {
                 new ButtonBuilder()
                     .setCustomId('previous')
                     .setLabel('⬅️')
-                    .setStyle('primary')
+                    .setStyle('Primary')
                     .setDisabled(currentPage === 0),
                 new ButtonBuilder()
                     .setCustomId('next')
                     .setLabel('➡️')
-                    .setStyle('primary')
+                    .setStyle('Primary')
                     .setDisabled(commands.length <= commandsPerPage)
             );
 
@@ -65,12 +65,12 @@ module.exports = {
                             new ButtonBuilder()
                                 .setCustomId('previous')
                                 .setLabel('⬅️')
-                                .setStyle('primary')
+                                .setStyle('Primary')
                                 .setDisabled(currentPage === 0),
                             new ButtonBuilder()
                                 .setCustomId('next')
                                 .setLabel('➡️')
-                                .setStyle('primary')
+                                .setStyle('Primary')
                                 .setDisabled((currentPage + 1) * commandsPerPage >= commands.length)
                         )
                 ]
