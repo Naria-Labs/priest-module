@@ -29,7 +29,7 @@ module.exports = {
 
 			// Save the output and get the last 1984 characters
 			const output = stdout;
-			const last1984Chars = output.slice(-1984);
+			const last1984Chars = output.slice(-154);
 
 			const basedEmbed = new EmbedBuilder()
 				.setColor('#0099ff')
