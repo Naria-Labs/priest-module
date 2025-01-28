@@ -41,15 +41,18 @@ module.exports = {
 			console.log(`stdout: ${stdout}`);
 			console.log(`stderr: ${stderr}`);
 			const output = stdout;
-			const last= output.slice(-1984);
+			const last= output.slice(-1999);
 
-			const basedEmbed = new EmbedBuilder()
+			const debugEmbed = new EmbedBuilder()
 				.setColor('#0099ff')
 				.setTitle('Command Output')
 				.setDescription(`\`\`\`${last}\`\`\``) // Slice to last 1984 characters
 				.setTimestamp();
 
-			interaction.followUp({ embeds: [basedEmbed] });
+			interaction.followUp({	
+				embeds: [debugEmbed],
+				ephermal: true,
+			});
 		});
 	},
 };
