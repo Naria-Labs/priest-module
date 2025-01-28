@@ -27,9 +27,13 @@ module.exports = {
 				return interaction.followUp(`Stderr: ${stderr}`);
 			}
 
+			// Log the stdout and stderr for debugging
+			console.log(`stdout: ${stdout}`);
+			console.log(`stderr: ${stderr}`);
+
 			// Save the output and get the last 1984 characters
 			const output = stdout;
-			const last1984Chars = output.slice(-154);
+			const last1984Chars = output.slice(-1984);
 
 			const basedEmbed = new EmbedBuilder()
 				.setColor('#0099ff')
