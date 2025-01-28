@@ -12,21 +12,20 @@ module.exports = {
 		const userMentioned = interaction.options.getUser('user');
 		const userID = userMentioned.id;
 
-
 		if (!hasGoodRole(interaction.member)) {
 			return interaction.reply({
-				content: `<@${userID}>, you can't use this comannd because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
+				content: `<@${userID}>, you can't use this command because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
 				ephemeral: true,
 			});
 		}
 
 		const command = 'pm2 log develop-priest --lines 1000 --nostream';
 
-		//Log the current working directory
+		// Log the current working directory
 		const currentDir = process.cwd();
 		console.log(`Current working directory: ${currentDir}`);
 
-		//Reply with the current working directory for debugging
+		// Reply with the current working directory for debugging
 		await interaction.reply(`Executing command: \`${command}\` in directory: \`${currentDir}\``);
 
 		exec(command, (error, stdout, stderr) => {
