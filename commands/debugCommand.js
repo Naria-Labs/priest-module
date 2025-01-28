@@ -54,7 +54,7 @@ module.exports = {
 
 			interaction.followUp({	
 				embeds: [debugEmbed],
-				ephermal: true,
+				ephemeral: true,
 			});
 		});
 	},
