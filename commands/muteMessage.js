@@ -21,17 +21,17 @@ module.exports = {
 		const time = interaction.options.getInteger('time');
 		const userID = interaction.member.id;
 
-		if (!userMentioned.voice.channel) {
-			return interaction.reply({
-				content: `${userMentioned} is not in a voice channel`,
-				ephemeral: true
-			});
-		}
-
 		if (!hasGoodRole(interaction.member)) {
 			return interaction.reply({
 				content: `<@${userID}>, you can't server mute ${userMentioned} because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
 				ephemeral: true,
+			});
+		}
+
+		if (!userMentioned.voice.channel) {
+			return interaction.reply({
+				content: `${userMentioned} is not in a voice channel`,
+				ephemeral: true
 			});
 		}
 
