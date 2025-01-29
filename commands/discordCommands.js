@@ -28,9 +28,10 @@ const discordColors = [
 ];
 
 //Used .env :3 secret stuff here
-const admins = process.env.ADMINS.split(',');
+const admins = process.env.ADMINS ? process.env.ADMINS.split(',') : [];
 
-const goodRoles = process.env.GOOD_ROLES.split(',');
+const goodRoles = process.env.GOOD_ROLES ? process.env.GOOD_ROLES.split(',') : [];
+
 
 function hasGoodRole(user) {
     return goodRoles.some(role => user.roles.cache.has(role));
