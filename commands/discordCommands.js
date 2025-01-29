@@ -1,4 +1,6 @@
-require('dotenv').config();
+const fs = require('fs');
+
+const config = JSON.parse(fs.readFileSync('./secret/keys.json', 'utf-8'));
 
 const discordColors = [
     { name: 'Default', value: '#000000' },
@@ -27,18 +29,7 @@ const discordColors = [
     { name: 'Yellow', value: '#FFFF00' },
 ];
 
-//Used .env :3 secret stuff here
-const admins = [
-    process.env.ADMIN1,
-    process.env.ADMIN2
-].filter(Boolean);
-
-const goodRoles = [
-    process.env.GOOD_ROLE1,
-    process.env.GOOD_ROLE2,
-    process.env.GOOD_ROLE3
-].filter(Boolean);
-
+const { admins, goodRoles } = config;
 
 function hasGoodRole(user) {
     return goodRoles.some(role => user.roles.cache.has(role));
