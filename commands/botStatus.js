@@ -18,6 +18,7 @@ const botActivity = [
     { name: 'Competing', value: 'competing' },
 ];
 
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('bstat')
