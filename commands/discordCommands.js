@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ path: './.env' });
 
 const discordColors = [
     { name: 'Default', value: '#000000' },
