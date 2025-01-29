@@ -16,14 +16,20 @@ module.exports = {
                 .setRequired(true)),
 
     async execute(interaction) {
+        console.log('Command executed'); // Debugging statement
+
         const userMentioned = interaction.options.getUser('user');
         const userID = userMentioned.id;
         const message = interaction.options.getString('message');
         const userThatSent = interaction.user;
 
+        console.log('User mentioned:', userMentioned); // Debugging statement
+        console.log('Message:', message); // Debugging statement
+
         if (!hasGoodRole(interaction.member)) {
+            console.log('User does not have a good role'); // Debugging statement
             return interaction.reply({
-                content: `<@${userID}>, you can't use this comannd because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
+                content: `<@${userID}>, you can't use this command because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
                 ephemeral: true,
             });
         }
@@ -38,11 +44,12 @@ module.exports = {
 
         try {
             const user = await interaction.client.users.fetch(userID);
+            console.log('User fetched:', user); // Debugging statement
             await user.send({ embeds: [messageToUser] });
             await interaction.reply({ content: 'Message sent successfully!', ephemeral: true });
         } catch (error) {
             console.error('Error sending message:', error);
-            await interaction.reply({ content: 'Failed to send the message.', ephemeral: true });
+            await interaction.reply({ content: `Failed to send the message. Error: ${error.message}`, ephemeral: true });
         }
     },
 };
