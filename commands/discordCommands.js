@@ -27,6 +27,7 @@ const discordColors = [
     { name: 'Yellow', value: '#FFFF00' },
 ];
 
+
 //Used .env :3 secret stuff here
 const goodRoles = process.env.GOOD_ROLES.split(',');
 
