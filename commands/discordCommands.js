@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const config = JSON.parse(fs.readFileSync('./scores/keys.json', 'utf-8'));
+const config = JSON.parse(fs.readFileSync('./secret/keys.json', 'utf-8'));
 
 const discordColors = [
     { name: 'Default', value: '#000000' },
