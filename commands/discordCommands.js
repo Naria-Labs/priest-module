@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const discordColors = [
     { name: 'Default', value: '#000000' },
     { name: 'Aqua', value: '#1ABC9C' },
@@ -25,21 +27,14 @@ const discordColors = [
     { name: 'Yellow', value: '#FFFF00' },
 ];
 
-// Moderator, full part admin, admin roles
-const goodRoles = [
-    '632250692509237268',
-    '632244499292225583',
-    '632244879216345138'
-];
+//Used .env :3 secret stuff here
+const goodRoles = process.env.GOOD_ROLES.split(',');
 
 function hasGoodRole(user) {
     return goodRoles.some(role => user.roles.cache.has(role));
 }
 
-const admins = [
-    '214695518566219777',
-    '183555639895654404'
-];
+const admins = process.env.ADMINS.split(',');
 
 module.exports = {
     discordColors,
