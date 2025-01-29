@@ -17,6 +17,7 @@ A versatile Discord bot module designed for a single user (@ThetaMTX), offering 
 /basedlvl
 ```
 
+
 - **Random Emote Generator**: Creates a message containing a random set of emotes.
 ```
 /mgenrandom
