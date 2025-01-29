@@ -6,7 +6,7 @@ A versatile Discord bot module designed for a single user (@ThetaMTX), offering 
 ## Features
 
 ### 🏛️ General Commands
-- **Help Command**: Provides a comprehensive explanation of all available commands.
+- **Help Command**: Provides a comprehensive explanation of all available commands in embed that can be "scroled" via buttons under the embed.
 ```
 /help
 ```
@@ -45,6 +45,20 @@ A versatile Discord bot module designed for a single user (@ThetaMTX), offering 
 /pvlist
 ```
 
+- **Message delete**: A usefull command to delete set ammount of messages.
+```
+/mdelete [ammount of messages]
+```
+
+- **Sent messages via bot**: Sent a message to a recipient (recipient need to be on the same server, and have few roles enabled).
+```
+/smessage [recipient] [message here]
+```
+
+- **Bot status**: Change the bot status and message.
+```
+/bstat [Set a bot to the 4 possible statuses (online, idle, dnd, invisible)] [set the message here]
+```
 
 ### 🎮 Mini-Games
 - **Snake Game**: A simple game where the user navigates an emote through a maze. The size of the maze is defined by the user.
