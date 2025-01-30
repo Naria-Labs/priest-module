@@ -28,7 +28,14 @@ module.exports = {
 			});
 		}
 
-		if (!userMentioned.voice.channel) {
+		if (!userMentioned) {
+			return interaction.reply({
+				content: `Could not find the user mentioned.`,
+				ephemeral: true
+			});
+		}
+
+		if (!userMentioned.voice || !userMentioned.voice.channel) {
 			return interaction.reply({
 				content: `${userMentioned} is not in a voice channel`,
 				ephemeral: true
