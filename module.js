@@ -16,6 +16,7 @@ module.exports = {
     require('./commands/botStatus.js'),
     require('./commands/sendMessage.js'),
     require('./commands/debugCommand.js'),
+    require('./commands/sayMessage.js'),
     //random files
     require('./commands/discordCommands.js'),
   ]
