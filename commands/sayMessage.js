@@ -25,7 +25,10 @@ module.exports = {
                 content: `${message}`,
             });
 
-            await interaction.deferReply({ ephemeral: true });
+            await interaction.reply({
+                content: 'Message sent!',
+                ephemeral: true,
+            });
         } catch (error) {
             console.error(error);
             await interaction.reply({
