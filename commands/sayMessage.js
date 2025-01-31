@@ -24,11 +24,6 @@ module.exports = {
             await interaction.channel.send({
                 content: `${message}`,
             });
-
-            await interaction.reply({
-                content: 'Message sent!',
-                ephemeral: true,
-            });
         } catch (error) {
             console.error(error);
             await interaction.reply({
