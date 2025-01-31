@@ -21,8 +21,13 @@ module.exports = {
 
             const message = interaction.options.getString('message');
 
-            await interaction.reply({
+            await interaction.channel.send({
                 content: `${message}`,
+            });
+
+            await interaction.reply({
+                content: 'Message sent!',
+                ephemeral: true,
             });
         } catch (error) {
             console.error(error);
