@@ -24,6 +24,8 @@ module.exports = {
             await interaction.channel.send({
                 content: `${message}`,
             });
+
+            await interaction.deferReply({ ephemeral: true });
         } catch (error) {
             console.error(error);
             await interaction.reply({
