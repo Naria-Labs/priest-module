@@ -13,7 +13,7 @@ module.exports = {
     async execute(interaction) {
         const message = interaction.options.getString('message');
         try {
-            if (!hasGoodRole(interaction.member) || /<@&?\d+>/.test(message)) {
+            if (!hasGoodRole(interaction.member) && /<@&?\d+>/.test(message)) {
                 return interaction.reply({
                     content: `You can't use this command because you don't have a required role: ${goodRoles.map(role => `<@&${role}>`).join(' or ')} to do that`,
                     ephemeral: true,
