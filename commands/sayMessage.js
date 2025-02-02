@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActivityType } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { hasGoodRole, goodRoles } = require('./discordCommands');
 
 module.exports = {
@@ -11,15 +11,14 @@ module.exports = {
                 .setRequired(true)),
 
     async execute(interaction) {
+        const message = interaction.options.getString('message');
         try {
-            if (!hasGoodRole(interaction.member)) {
+            if (!hasGoodRole(interaction.member) || /<@&?\d+>/.test(message)) {
                 return interaction.reply({
-                    content: `You can't use this command because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
+                    content: `You can't use this command because you don't have a required role: ${goodRoles.map(role => `<@&${role}>`).join(' or ')} to do that`,
                     ephemeral: true,
                 });
             }
-
-            const message = interaction.options.getString('message');
 
             await interaction.channel.send({
                 content: `${message}`,
