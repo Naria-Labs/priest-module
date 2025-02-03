@@ -32,10 +32,9 @@ module.exports = {
 
         let refreshId = 0;
         const imageUrl = await fetchImage();
-        const imageBig = imageUrl.replace('s.jpg', '.jpg');
-        if (!imageBig) {
-            await interaction.editReply('Failed to fetch image from 4chan.');
-            return;
+        const imageBig = imageUrl ? imageUrl.replace('s.jpg', '.jpg') : 'elementor/utils/get_placeholder_image_src';
+        if (!imageUrl) {
+            await interaction.editReply('Failed to fetch image from 4chan. Using placeholder image.');
         }
 
         const refreshButton = new ButtonBuilder()
@@ -66,10 +65,9 @@ module.exports = {
                 await buttonInteraction.deferUpdate(); // Defer the update
                 refreshId++;
                 const newImageUrl = await fetchImage();
-                const newImageBig = newImageUrl.replace('s.jpg', '.jpg');
-                if (!newImageBig) {
-                    await buttonInteraction.followUp('Failed to fetch image from 4chan.');
-                    return;
+                const newImageBig = newImageUrl ? newImageUrl.replace('s.jpg', '.jpg') : 'elementor/utils/get_placeholder_image_src';
+                if (!newImageUrl) {
+                    await buttonInteraction.followUp('Failed to fetch image from 4chan. Using placeholder image.');
                 }
 
                 const newEmbed = new EmbedBuilder()
