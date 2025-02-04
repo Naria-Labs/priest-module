@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, MessageEmbed } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -14,12 +14,12 @@ module.exports = {
         const attachment = interaction.options.getAttachment('image');
         const user = interaction.user;
         const reply = `You posted an image with the name: ${attachment.name}`;
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setColor('#0099ff')
             .setTitle('Attachment')
             .setDescription(reply)
             .setTimestamp()
-            .setFooter(`Requested by ${user.tag}`, user.displayAvatarURL());
+            .setFooter({ text: `Requested by ${user.tag}`, iconURL: user.displayAvatarURL() });
 
         await user.send({ embeds: [embed] });
         await interaction.reply({ content: 'I have sent you a DM with the details!', ephemeral: true });
