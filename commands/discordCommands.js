@@ -32,9 +32,12 @@ function hasGoodRole(user) {
     return goodRoles.some(role => user.roles.cache.has(role));
 }
 
+const virusTotalAPIKey = process.env.VIRUSTOTAL_API_KEY;
+
 module.exports = {
     discordColors,
     goodRoles,
     hasGoodRole,
-    admins
+    admins,
+    virusTotalAPIKey,
 };
