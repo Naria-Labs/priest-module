@@ -62,6 +62,8 @@ module.exports = {
                     'x-apikey': virusTotalAPIKey,
                     ...form.getHeaders(),
                 },
+                maxContentLength: 1024 * 1024 * 1024, // 1GB
+                maxBodyLength: 1024 * 1024 * 1024, // 1GB
             });
 
             if (!uploadResponse.data || !uploadResponse.data.data || !uploadResponse.data.data.id) {
@@ -110,7 +112,11 @@ module.exports = {
 
         } catch (error) {
             console.error('Error scanning file:', error);
-            await interaction.editReply({ content: 'An error occurred while scanning the file. Please try again later.', ephemeral: true });
+            if (error.message.includes('maxContentLength size of')) {
+                await interaction.editReply({ content: 'The file size exceeds the 1GB limit. Please upload a smaller file.', ephemeral: true });
+            } else {
+                await interaction.editReply({ content: 'An error occurred while scanning the file. Please try again later.', ephemeral: true });
+            }
         }
     },
 };
