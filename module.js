@@ -18,6 +18,7 @@ module.exports = {
     require('./commands/debugCommand.js'),
     require('./commands/sayMessage.js'),
     require('./commands/slowMode.js'),
+    require('./commands/attachment.js'),
     //random files
     require('./commands/discordCommands.js'),
   ]
