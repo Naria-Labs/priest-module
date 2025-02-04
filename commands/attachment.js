@@ -6,7 +6,7 @@ const { virusTotalAPIKey } = require('./discordCommands');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('scanfile')
-        .setDescription('Get yourself a scan from VirusTotal')
+        .setDescription('Get yourself a scan from VirusTotal max 25MB')
         .addAttachmentOption((attachment) =>
             attachment
                 .setName('file')
