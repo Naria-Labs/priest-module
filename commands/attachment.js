@@ -69,8 +69,8 @@ module.exports = {
             }
 
             const fileId = uploadResponse.data.data.id;
-            //wait 10 seconds
-            await new Promise((resolve) => setTimeout(resolve, 10000));
+            //wait 25 seconds
+            await new Promise((resolve) => setTimeout(resolve, 25000));
 
             //get scan results
             const scanResponse = await axios.get(`https://www.virustotal.com/api/v3/analyses/${fileId}`, {
