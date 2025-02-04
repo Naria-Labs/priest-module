@@ -1,5 +1,4 @@
-﻿const { SlashCommandBuilder } = require('discord.js');
-const { EmbedBuilder } = require('@discordjs/builders');
+﻿const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const axios = require('axios');
 const FormData = require('form-data');
 const { virusTotalAPIKey } = require('./discordCommands');
@@ -25,7 +24,7 @@ module.exports = {
         await interaction.reply({ content: 'Checking API quota and rate limits...', ephemeral: true });
 
         try {
-            // Check rate limit and quota
+            //Check rate limit and quota
             const quotaResponse = await axios.get('https://www.virustotal.com/api/v3/users/me', {
                 headers: { 'x-apikey': virusTotalAPIKey },
             });
@@ -50,11 +49,11 @@ module.exports = {
                 return;
             }
 
-            // Download the file
+            //Download the file
             const response = await axios.get(fileURL, { responseType: 'arraybuffer' });
             const fileBuffer = Buffer.from(response.data);
 
-            // Upload file to VirusTotal
+            //upload file to VirusTotal
             const form = new FormData();
             form.append('file', fileBuffer, fileName);
 
@@ -70,10 +69,10 @@ module.exports = {
             }
 
             const fileId = uploadResponse.data.data.id;
-            // Wait 25 seconds
+            //wait 25 seconds
             await new Promise((resolve) => setTimeout(resolve, 25000));
 
-            // Get scan results
+            //get scan results
             const scanResponse = await axios.get(`https://www.virustotal.com/api/v3/analyses/${fileId}`, {
                 headers: { 'x-apikey': virusTotalAPIKey },
             });
@@ -100,12 +99,10 @@ module.exports = {
                 embed.setImage(fileURL);
             }
 
-            if (maliciousCount === 0) {
+            if (maliciousCount = 0) {
+                embed.addFields({ name: '⚠️ WARNING!', value: 'This file is **malicious**! Please do not open it.' });
+            } else if(maliciousCount < 4){
                 embed.addFields({ name: '✅ Safe!', value: 'No threats detected.' });
-            } else if (maliciousCount < 4) {
-                embed.addFields({ name: '⚠️ WARNING!', value: 'This file could be **malicious**! Please open it with care.' });
-            } else {
-                embed.addFields({ name: '🚨 DANGER!', value: 'This file is **malicious**! Please do not open it.' });
             }
 
             await user.send({ embeds: [embed] });
