@@ -16,9 +16,10 @@ module.exports = {
         const reply = `You posted an image with the name: ${attachment.name}`;
         const embed = new EmbedBuilder()
             .setColor('#0099ff')
-            .setTitle('Attachment')
+            .setTitle('File that you sended')
             .setDescription(reply)
             .setTimestamp()
+            .addAttachmentOption(attachment)
             .setFooter({ text: `Requested by ${user.tag}`, iconURL: user.displayAvatarURL() });
 
         await user.send({ embeds: [embed] });
