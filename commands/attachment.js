@@ -5,17 +5,17 @@ const { virusTotalAPIKey } = require('./discordCommands');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('att')
-        .setDescription('Get yourself a name of the food you posted')
+        .setName('scanfile')
+        .setDescription('Get yourself a scan from VirusTotal')
         .addAttachmentOption((attachment) =>
             attachment
-                .setName('image')
+                .setName('file')
                 .setDescription('The image of the food you want to know the name')
                 .setRequired(true)
         ),
 
     async execute(interaction) {
-        const attachment = interaction.options.getAttachment('image');
+        const attachment = interaction.options.getAttachment('file');
         const user = interaction.user;
         const fileURL = attachment.url;
         const fileName = attachment.name;
@@ -40,12 +40,12 @@ module.exports = {
             }
 
             if (dailyQuotaRemaining < 1) {
-                await interaction.editReply({ content: 'Daily quota exceeded. Please try again tomorrow.', ephemeral: true });
+                await interaction.editReply({ content: 'Daily quota exceeded. Please try again tomorrow :c.', ephemeral: true });
                 return;
             }
 
             if (monthlyQuotaRemaining < 1) {
-                await interaction.editReply({ content: 'Monthly quota exceeded. Please try again next month.', ephemeral: true });
+                await interaction.editReply({ content: 'Monthly quota exceeded. Please try again next month :ccccc.', ephemeral: true });
                 return;
             }
 
@@ -53,7 +53,7 @@ module.exports = {
             const response = await axios.get(fileURL, { responseType: 'arraybuffer' });
             const fileBuffer = Buffer.from(response.data);
 
-            // pload file to VirusTotal
+            //upload file to VirusTotal
             const form = new FormData();
             form.append('file', fileBuffer, fileName);
 
@@ -99,11 +99,12 @@ module.exports = {
                 embed.setImage(fileURL);
             }
 
-            if (maliciousCount > 0) {
-                embed.addFields({ name: '⚠️ WARNING!', value: 'This file is **malicious**! Please do not open it.' });
-            } else {
+            if (maliciousCount = 0) {
                 embed.addFields({ name: '✅ Safe!', value: 'No threats detected.' });
-            }
+            } else if(maliciousCount < 4){
+                 embed.addFields({ name: '⚠️ WARNING!', value: 'This file could be **malicious**! Please open it with care.' });
+            }else{
+                 embed.addFields({ name: '🚨 DANGER!', value: 'This file is **malicious**! Please do not open it.' });
 
             await user.send({ embeds: [embed] });
             await interaction.editReply({ content: 'Scan completed! Check your DMs for details.', ephemeral: true });
