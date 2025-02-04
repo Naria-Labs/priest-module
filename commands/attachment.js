@@ -45,7 +45,7 @@ module.exports = {
             }
 
             if (monthlyQuotaRemaining < 1) {
-                await interaction.editReply({ content: 'Monthly quota exceeded. Please try again next month :ccccc.', ephemeral: true });
+                await interaction.editReply({ content: 'Monthly quota exceeded. Please try again next month :ccccc .', ephemeral: true });
                 return;
             }
 
@@ -99,9 +99,9 @@ module.exports = {
                 embed.setImage(fileURL);
             }
 
-            if (maliciousCount = 0) {
-                embed.addFields({ name: '⚠️ WARNING!', value: 'This file is **malicious**! Please do not open it.' });
-            } else if(maliciousCount < 4){
+            if (maliciousCount > 4) {
+                embed.addFields({ name: '⚠️ WARNING!', value: 'This file could be **malicious**! Please open it on your own risk.' });
+            } else {
                 embed.addFields({ name: '✅ Safe!', value: 'No threats detected.' });
             }
 
