@@ -13,14 +13,21 @@ module.exports = {
     async execute(interaction) {
         const attachment = interaction.options.getAttachment('image');
         const user = interaction.user;
-        const reply = `You posted an image with the name: ${attachment.name}`;
+        const reply = `You posted a file with the name: ${attachment.name}`;
+        const typeAttachment = attachment.contentType;
+
         const embed = new EmbedBuilder()
             .setColor('#0099ff')
-            .setTitle('File that you sended')
+            .setTitle('File that you sent')
             .setDescription(reply)
             .setTimestamp()
-            .addAttachmentOption(attachment)
             .setFooter({ text: `Requested by ${user.tag}`, iconURL: user.displayAvatarURL() });
+
+        if (typeAttachment && typeAttachment.startsWith('image')) {
+            embed.setImage(attachment.url);
+        } else {
+            embed.addFields({ name: 'Note', value: 'The file you sent is not an image so I cant display it :c .' });
+        }
 
         await user.send({ embeds: [embed] });
         await interaction.reply({ content: 'I have sent you a DM with the details!', ephemeral: true });
