@@ -27,7 +27,7 @@ module.exports = {
             }
 
             const countryName = countryData.name.common;
-            const flagUrl = countryData.flags.svg; // Get the flag SVG URL
+            const flagUrl = countryData.flags.png; // Get the flag PNG URL
 
             const embed = new EmbedBuilder()
                 .setColor(0x003253)
