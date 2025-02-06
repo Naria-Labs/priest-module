@@ -1,8 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require('discord.js');
 const axios = require('axios');
 const cheerio = require('cheerio');
-const { createCanvas } = require('canvas');
-const canvg = require('canvg');
+const Canvas = require('@napi-rs/canvas');
 const path = require('path');
 const fs = require('fs');
 
@@ -36,15 +35,13 @@ module.exports = {
                     flagFound = true;
                     const flagUrl = `https://hampusborgos.github.io/country-flags/${imgSrc}`;
 
-                    // Fetch SVG content
+
                     const svgResponse = await axios.get(flagUrl, { responseType: 'text' });
                     const svgContent = svgResponse.data;
-
-                    // Convert SVG to PNG
-                    const canvas = createCanvas(512, 340); // Standard flag dimensions
-                    const ctx = canvas.getContext('2d');
-                    const v = canvg.Canvg.fromString(ctx, svgContent);
-                    await v.render();
+                    const canvas = Canvas.createCanvas(512, 340); 
+                    const context = canvas.getContext('2d');
+                    const flag = await Canvas.loadImage(flagUrl);
+                    context.drawImage(flag, 0, 0, canvas.width, canvas.height);
 
                     // Save the PNG file temporarily
                     const filePath = path.join(__dirname, 'flag.png');
@@ -60,6 +57,7 @@ module.exports = {
                         .setImage('attachment://flag.png');
 
                     await interaction.editReply({ embeds: [embed], files: [attachment], ephemeral: true });
+
                     // Filus deletus
                     fs.unlinkSync(filePath);
                     break;
@@ -76,3 +74,4 @@ module.exports = {
         }
     },
 };
+
