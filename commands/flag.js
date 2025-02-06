@@ -24,17 +24,17 @@ module.exports = {
             let flagFound = false;
             $('figure').each((index, element) => {
                 const figcaption = $(element).find('figcaption').text().toLowerCase();
-                let imgSrc = $(element).find('img').attr('src');
+                const imgSrc = $(element).find('img').attr('src');
 
                 if (figcaption.includes(country)) {
                     flagFound = true;
-                    // Replace .svg with .png in the image URL
-                    imgSrc = imgSrc.replace('.svg', '.png');
+                    const pngUrl = `https://api.svg2png.com/v1/svg2png?url=${encodeURIComponent(imgSrc)}`;
+
                     const embed = new EmbedBuilder()
                         .setColor(0x003253)
                         .setTitle('Country Flag')
                         .setDescription(`**Country:** ${figcaption}`)
-                        .setImage(imgSrc);
+                        .setImage(pngUrl);
 
                     interaction.editReply({ embeds: [embed], ephemeral: true });
                     return false; // Break the loop
@@ -51,4 +51,3 @@ module.exports = {
         }
     },
 };
-
