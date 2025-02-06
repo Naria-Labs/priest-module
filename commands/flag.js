@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require('discord.js');
 const axios = require('axios');
 const cheerio = require('cheerio');
-const Canvas = require('@napi-rs/canvas');
+const Canvas = require('canvas');
 const path = require('path');
 const fs = require('fs');
 
