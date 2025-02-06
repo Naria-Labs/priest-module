@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const axios = require('axios');
+const { countries } = require('./discordCommands');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -9,10 +10,22 @@ module.exports = {
             option.setName('country')
                 .setDescription('The name of the country')
                 .setRequired(true)
+        )
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('cheating')
+                .setDescription('Search of the tags that are in the image generator')
+                .addStringOption(option =>
+                    option.setName('tags')
+                        .setDescription('cheating')
+                        .addChoices(...Object.keys(countries).map(name => ({ name, value: name })))
+                        .setRequired(false)
+                )
         ),
 
     async execute(interaction) {
-        const country = interaction.options.getString('country');
+        const subcommand = interaction.options.getSubcommand(false);
+        const country = subcommand === 'cheating' ? interaction.options.getString('tags') : interaction.options.getString('country');
 
         await interaction.reply({ content: 'Fetching flag information...', ephemeral: true });
 
@@ -43,3 +56,5 @@ module.exports = {
         }
     },
 };
+
+
