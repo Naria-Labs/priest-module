@@ -1,9 +1,5 @@
-const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const axios = require('axios');
-const cheerio = require('cheerio');
-const Canvas = require('@napi-rs/canvas');
-const path = require('path');
-const fs = require('fs');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -16,61 +12,34 @@ module.exports = {
         ),
 
     async execute(interaction) {
-        const country = interaction.options.getString('country').toLowerCase();
+        const country = interaction.options.getString('country');
 
         await interaction.reply({ content: 'Fetching flag information...', ephemeral: true });
 
         try {
-            const response = await axios.get('https://hampusborgos.github.io/country-flags/');
-            const $ = cheerio.load(response.data);
+            // Fetch country info from REST Countries API
+            const response = await axios.get(`https://restcountries.com/v3.1/name/${country}?fullText=true`);
+            const countryData = response.data[0];
 
-            let flagFound = false;
-            const figures = $('figure').toArray();
-
-            for (const element of figures) {
-                const figcaption = $(element).find('figcaption').text().toLowerCase();
-                const imgSrc = $(element).find('img').attr('src');
-
-                if (figcaption.includes(country)) {
-                    flagFound = true;
-                    const flagUrl = `https://hampusborgos.github.io/country-flags/${imgSrc}`;
-
-                    const svgResponse = await axios.get(flagUrl, { responseType: 'text' });
-                    const svgContent = svgResponse.data;
-
-                    const canvas = Canvas.createCanvas(512, 340); // Standard flag dimensions
-                    const context = canvas.getContext('2d');
-                    const flag = await Canvas.loadImage(flagUrl);
-                    context.drawImage(flag, 0, 0, canvas.width, canvas.height);
-
-                    // Save the PNG file temporarily
-                    const filePath = path.join(__dirname, 'flag.png');
-                    const buffer = canvas.toBuffer('image/png');
-                    fs.writeFileSync(filePath, buffer);
-
-                    const attachment = new AttachmentBuilder(filePath, { name: 'flag.png' });
-
-                    const embed = new EmbedBuilder()
-                        .setColor(0x003253)
-                        .setTitle('Country Flag')
-                        .setDescription(`**Country:** ${figcaption}`)
-                        .setImage('attachment://flag.png');
-
-                    await interaction.editReply({ embeds: [embed], files: [attachment], ephemeral: true });
-
-                    // Deletus
-                    fs.unlinkSync(filePath);
-                    break;
-                }
+            if (!countryData) {
+                await interaction.editReply({ content: 'Country not found. Please try again.', ephemeral: true });
+                return;
             }
 
-            if (!flagFound) {
-                await interaction.editReply({ content: 'Country not found. Please try again with a different name.', ephemeral: true });
-            }
+            const countryName = countryData.name.common;
+            const flagUrl = countryData.flags.svg; // Get the flag SVG URL
+
+            const embed = new EmbedBuilder()
+                .setColor(0x003253)
+                .setTitle(`Flag of ${countryName}`)
+                .setImage(flagUrl)
+                .setFooter({ text: `Requested by ${interaction.user.username}` });
+
+            await interaction.editReply({ embeds: [embed], ephemeral: true });
 
         } catch (error) {
             console.error('Error fetching flag information:', error);
-            await interaction.editReply({ content: 'An error occurred while fetching the flag information. Please try again later.', ephemeral: true });
+            await interaction.editReply({ content: 'An error occurred while fetching the flag. Please try again later.', ephemeral: true });
         }
     },
 };
