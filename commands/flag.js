@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const axios = require('axios');
 const cheerio = require('cheerio');
 
@@ -28,10 +28,13 @@ module.exports = {
 
                 if (figcaption.includes(country)) {
                     flagFound = true;
-                    interaction.editReply({
-                        content: `**Country:** ${figcaption}\n**Flag:** ${imgSrc}`,
-                        ephemeral: true
-                    });
+                    const embed = new EmbedBuilder()
+                        .setColor(0x003253)
+                        .setTitle('Country Flag')
+                        .setDescription(`**Country:** ${figcaption}`)
+                        .setImage(imgSrc);
+
+                    interaction.editReply({ embeds: [embed], ephemeral: true });
                     return false; // Break the loop
                 }
             });
