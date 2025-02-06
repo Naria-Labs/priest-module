@@ -24,10 +24,12 @@ module.exports = {
             let flagFound = false;
             $('figure').each((index, element) => {
                 const figcaption = $(element).find('figcaption').text().toLowerCase();
-                const imgSrc = $(element).find('img').attr('src');
+                let imgSrc = $(element).find('img').attr('src');
 
                 if (figcaption.includes(country)) {
                     flagFound = true;
+                    // Replace .svg with .png in the image URL
+                    imgSrc = imgSrc.replace('.svg', '.png');
                     const embed = new EmbedBuilder()
                         .setColor(0x003253)
                         .setTitle('Country Flag')
@@ -49,3 +51,4 @@ module.exports = {
         }
     },
 };
+
