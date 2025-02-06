@@ -1,6 +1,10 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require('discord.js');
 const axios = require('axios');
 const cheerio = require('cheerio');
+const { createCanvas } = require('canvas');
+const canvg = require('canvg');
+const path = require('path');
+const fs = require('fs');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -22,32 +26,53 @@ module.exports = {
             const $ = cheerio.load(response.data);
 
             let flagFound = false;
-            $('figure').each((index, element) => {
+            const figures = $('figure').toArray();
+
+            for (const element of figures) {
                 const figcaption = $(element).find('figcaption').text().toLowerCase();
                 const imgSrc = $(element).find('img').attr('src');
 
                 if (figcaption.includes(country)) {
                     flagFound = true;
-                    const pngUrl = `https://api.svg2png.com/v1/svg2png?url=${encodeURIComponent(imgSrc)}`;
+                    const flagUrl = `https://hampusborgos.github.io/country-flags/${imgSrc}`;
+
+                    // Fetch SVG content
+                    const svgResponse = await axios.get(flagUrl, { responseType: 'text' });
+                    const svgContent = svgResponse.data;
+
+                    // Convert SVG to PNG
+                    const canvas = createCanvas(512, 340); // Standard flag dimensions
+                    const ctx = canvas.getContext('2d');
+                    const v = canvg.Canvg.fromString(ctx, svgContent);
+                    await v.render();
+
+                    // Save the PNG file temporarily
+                    const filePath = path.join(__dirname, 'flag.png');
+                    const buffer = canvas.toBuffer('image/png');
+                    fs.writeFileSync(filePath, buffer);
+
+                    const attachment = new AttachmentBuilder(filePath, { name: 'flag.png' });
 
                     const embed = new EmbedBuilder()
                         .setColor(0x003253)
                         .setTitle('Country Flag')
                         .setDescription(`**Country:** ${figcaption}`)
-                        .setImage(pngUrl);
+                        .setImage('attachment://flag.png');
 
-                    interaction.editReply({ embeds: [embed], ephemeral: true });
-                    return false; // Break the loop
+                    await interaction.editReply({ embeds: [embed], files: [attachment], ephemeral: true });
+                    // Filus deletus
+                    fs.unlinkSync(filePath);
+                    break;
                 }
-            });
+            }
 
             if (!flagFound) {
-                interaction.editReply({ content: 'Country not found. Please try again with a different name.', ephemeral: true });
+                await interaction.editReply({ content: 'Country not found. Please try again with a different name.', ephemeral: true });
             }
 
         } catch (error) {
             console.error('Error fetching flag information:', error);
-            interaction.editReply({ content: 'An error occurred while fetching the flag information. Please try again later.', ephemeral: true });
+            await interaction.editReply({ content: 'An error occurred while fetching the flag information. Please try again later.', ephemeral: true });
         }
     },
 };
