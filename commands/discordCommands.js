@@ -1,4 +1,4 @@
-require('dotenv').config();
+﻿require('dotenv').config();
 
 const discordColors = [
     { name: 'Default', value: '#000000' },
@@ -26,6 +26,7 @@ const discordColors = [
     { name: 'DarkNavy', value: '#2C3E50' },
     { name: 'Yellow', value: '#FFFF00' },
 ];
+
 const admins = process.env.ADMINS ? process.env.ADMINS.split(',') : ['Admins not included in the files'];
 const goodRoles = process.env.GOOD_ROLES ? process.env.GOOD_ROLES.split(',') : ['Roles not included in the files'];
 function hasGoodRole(user) {
@@ -33,6 +34,7 @@ function hasGoodRole(user) {
 }
 
 const virusTotalAPIKey = process.env.VIRUSTOTAL_API_KEY;
+
 
 module.exports = {
     discordColors,
