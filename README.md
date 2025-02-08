@@ -91,4 +91,4 @@ A versatile Discord bot module designed for a single user (@ThetaMTX), offering 
 ---
 
 ## Notes
-- **Database Dependency**: Some features, such as `/pvlist`, require database integration for full functionality that will be implemented in this year copium.
+- **Database Dependency**: Some features, such as `/pvlist`, require database integration for full functionality that will be implemented in this year copium. [x][x][]
