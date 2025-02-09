@@ -43,7 +43,7 @@ module.exports = {
                     const position = ['1st', '2nd', '3rd', '4th', '5th'][index];
                     leaderboardEmbed.addFields({
                         name: position,
-                        value: `Name: <@${row.discord_id_user}> Score: ${row.score}`,
+                        value: `Name: <@${row.discord_id_user}> Score: ${row.scores}`,
                         inline: false,
                     });
                 });
