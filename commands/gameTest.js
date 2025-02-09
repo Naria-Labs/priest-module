@@ -164,12 +164,6 @@ module.exports = {
                                     console.error(err.message);
                                 }
                             });
-                        } else {
-                            db.run('INSERT INTO users (discord_id_user, scores) VALUES (?, ?)', [userId, scoreValue], (err) => {
-                                if (err) {
-                                    console.error(err.message);
-                                }
-                            });
                         }
                     });
                 });
@@ -187,3 +181,4 @@ module.exports = {
         });
     },
 };
+
