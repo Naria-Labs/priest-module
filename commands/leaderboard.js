@@ -4,7 +4,11 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
 const dbPath = path.resolve(__dirname, '../db/test.db');
+const dbDir = path.dirname(dbPath);
 
+if (!fs.existsSync(dbDir)) {
+    fs.mkdirSync(dbDir, { recursive: true });
+}
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('leaderboard')
