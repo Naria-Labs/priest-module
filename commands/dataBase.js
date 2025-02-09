@@ -1,5 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
 
 const options = [
     { name: 'Save', value: 'Save' },
@@ -8,6 +10,14 @@ const options = [
     { name: 'Update', value: 'Update' },
     { name: 'AddColumn', value: 'AddColumn' },
 ];
+
+const dbPath = path.resolve(__dirname, '../db/test.db');
+const dbDir = path.dirname(dbPath);
+
+// Ensure the directory exists
+if (!fs.existsSync(dbDir)) {
+    fs.mkdirSync(dbDir, { recursive: true });
+}
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -30,7 +40,7 @@ module.exports = {
         const userId = interaction.user.id;
         const testValue = interaction.options.getString('test');
         const sqlite3 = require('sqlite3').verbose();
-        const db = new sqlite3.Database('./db/test.db', (err) => {
+        const db = new sqlite3.Database(dbPath, (err) => {
             if (err) {
                 console.error(err.message);
             }
