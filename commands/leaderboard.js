@@ -20,10 +20,12 @@ module.exports = {
 		});
 
 		db.serialize(() => {
-			db.all('SELECT discord_id_user, score FROM scores ORDER BY score DESC LIMIT 5', (err, rows) => {
+			db.all('SELECT discord_id_user, score FROM scores ORDER BY score DESC LIMIT 5', async (err, rows) => {
 				if (err) {
 					console.error(err.message);
-					return interaction.reply({ content: 'An error occurred while fetching the leaderboard.', ephemeral: true });
+					await interaction.reply({ content: 'An error occurred while fetching the leaderboard.', ephemeral: true });
+					db.close();
+					return;
 				}
 
 				// Construct leaderboard embed
@@ -41,15 +43,15 @@ module.exports = {
 					});
 				});
 
-				interaction.reply({ embeds: [leaderboardEmbed] });
+				// Reply with the embed
+				await interaction.reply({ embeds: [leaderboardEmbed] });
+				db.close((err) => {
+					if (err) {
+						console.error(err.message);
+					}
+					console.log('Close the database connection.');
+				});
 			});
-		});
-
-		db.close((err) => {
-			if (err) {
-				console.error(err.message);
-			}
-			console.log('Close the database connection.');
 		});
 	},
 };
