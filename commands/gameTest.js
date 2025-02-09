@@ -158,12 +158,13 @@ module.exports = {
                         if (err) {
                             console.error(err.message);
                         } else if (row) {
-                            const newScore = Math.max(row.scores, scoreValue);
-                            db.run('UPDATE users SET scores = ? WHERE discord_id_user = ?', [newScore, userId], (err) => {
-                                if (err) {
-                                    console.error(err.message);
-                                }
-                            });
+                            if (row.scores !== scoreValue) {
+                                db.run('UPDATE users SET scores = ? WHERE discord_id_user = ?', [scoreValue, userId], (err) => {
+                                    if (err) {
+                                        console.error(err.message);
+                                    }
+                                });
+                            }
                         } else {
                             db.run('INSERT INTO users (discord_id_user, scores) VALUES (?, ?)', [userId, scoreValue], (err) => {
                                 if (err) {
