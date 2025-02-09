@@ -28,7 +28,7 @@ module.exports = {
         ),
 
     async execute(interaction) {
-
+    const userID = interaction.user.id;
         if (!admins.includes(userID)) {
 	return interaction.reply({
 		content: `You don't have permission to use this command.`,
