@@ -127,18 +127,18 @@ module.exports = {
             });
         });
 
-        collector.on('end', () => {
+        collector.on('end', async () => {
             left.setDisabled(true);
             up.setDisabled(true);
             down.setDisabled(true);
             right.setDisabled(true);
 
-            interaction.editReply({
+            await interaction.editReply({
                 content: 'Game over!',
                 components: [row],
             });
 
-            function addOrUpdateScore(userId, scoreValue) {
+            async function addOrUpdateScore(userId, scoreValue) {
                 const db = new sqlite3.Database(dbPath, (err) => {
                     if (err) {
                         console.error(err.message);
@@ -183,7 +183,7 @@ module.exports = {
             }
 
             //update the database
-            addOrUpdateScore(interaction.user.id, scoreValue);
+            await addOrUpdateScore(interaction.user.id, scoreValue);
         });
     },
 };
