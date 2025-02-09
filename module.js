@@ -20,6 +20,7 @@ module.exports = {
     require('./commands/slowMode.js'),
     require('./commands/attachment.js'),
     require('./commands/flag.js'),
+    require('./commands/dataBase.js'),
     //random files
     require('./commands/discordCommands.js'),
   ]
