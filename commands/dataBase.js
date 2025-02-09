@@ -17,13 +17,12 @@ module.exports = {
             option.setName('test')
                 .setDescription('testing the database with the random text')
                 .setRequired(true)
-                .addStringOption((option) =>
-                    option
-                        .setName('options')
-                        .setDescription('Choose the time format')
-                        .addChoices(...options)
-                        .setRequired(true)
-                )
+        )
+        .addStringOption(option =>
+            option.setName('options')
+                .setDescription('Choose the operation')
+                .addChoices(...options)
+                .setRequired(true)
         ),
 
     async execute(interaction) {
