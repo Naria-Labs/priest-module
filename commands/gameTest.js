@@ -138,7 +138,7 @@ module.exports = {
                 components: [row],
             });
 
-            async function addOrUpdateScore(userId, scoreValue) {
+            async function updateScoreIfHigher(userId, scoreValue) {
                 const db = new sqlite3.Database(dbPath, (err) => {
                     if (err) {
                         console.error(err.message);
@@ -147,32 +147,16 @@ module.exports = {
                     console.log('Connected to the test database.');
                 });
 
-                db.serialize(() => {
-                    db.run('CREATE TABLE IF NOT EXISTS users (Uid INTEGER PRIMARY KEY, discord_id_user TEXT UNIQUE, scores INTEGER)', (err) => {
-                        if (err) {
-                            console.error(err.message);
-                        }
-                    });
-
-                    db.get('SELECT scores FROM users WHERE discord_id_user = ?', [userId], (err, row) => {
-                        if (err) {
-                            console.error(err.message);
-                        } else if (row) {
-                            if (row.scores !== scoreValue) {
-                                db.run('UPDATE users SET scores = ? WHERE discord_id_user = ?', [scoreValue, userId], (err) => {
-                                    if (err) {
-                                        console.error(err.message);
-                                    }
-                                });
+                db.get('SELECT scores FROM users WHERE discord_id_user = ?', [userId], (err, row) => {
+                    if (err) {
+                        console.error(err.message);
+                    } else if (row && scoreValue > row.scores) {
+                        db.run('UPDATE users SET scores = ? WHERE discord_id_user = ?', [scoreValue, userId], (err) => {
+                            if (err) {
+                                console.error(err.message);
                             }
-                        } else {
-                            db.run('INSERT INTO users (discord_id_user, scores) VALUES (?, ?)', [userId, scoreValue], (err) => {
-                                if (err) {
-                                    console.error(err.message);
-                                }
-                            });
-                        }
-                    });
+                        });
+                    }
                 });
 
                 db.close((err) => {
@@ -183,9 +167,8 @@ module.exports = {
                 });
             }
 
-            //update the database
-            await addOrUpdateScore(interaction.user.id, scoreValue);
+            // update the database
+            await updateScoreIfHigher(interaction.user.id, scoreValue);
         });
     },
 };
-
