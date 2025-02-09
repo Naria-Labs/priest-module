@@ -25,7 +25,7 @@ module.exports = {
         });
 
         db.serialize(() => {
-            db.all('SELECT discord_id_user, score FROM scores ORDER BY score DESC LIMIT 5', async (err, rows) => {
+            db.all('SELECT discord_id_user, scores FROM users ORDER BY scores DESC LIMIT 5', async (err, rows) => {
                 if (err) {
                     console.error(err.message);
                     await interaction.reply({ content: 'An error occurred while fetching the leaderboard.', ephemeral: true });
