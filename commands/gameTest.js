@@ -1,4 +1,8 @@
 ﻿const { Client, ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder } = require('discord.js');
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+
+const dbPath = path.resolve(__dirname, '../db/test.db');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -10,7 +14,6 @@ module.exports = {
                 .setMinValue(3)
                 .setMaxValue(8)
         ),
-
 
     async execute(interaction) {
         const author = interaction.member;
@@ -82,7 +85,6 @@ module.exports = {
             }
         };
 
-
         const collector = interaction.channel.createMessageComponentCollector({ time: 60001 });
         //where the game is starting
         collector.on('collect', async buttonInteraction => {
@@ -111,8 +113,6 @@ module.exports = {
                     break;
             }
 
-
-            //scoreValue++; //change it later for a a smth that is not incrementing the score every time you move
             checkPosition();
 
             Board[playerX][playerY] = '<:trolldespair:1314248186352763003>';
@@ -127,70 +127,48 @@ module.exports = {
             });
         });
 
-        collector.on('end', () => {
+        collector.on('end', async () => {
             left.setDisabled(true);
             up.setDisabled(true);
             down.setDisabled(true);
             right.setDisabled(true);
 
-            interaction.editReply({
+            await interaction.editReply({
                 content: 'Game over!',
                 components: [row],
             });
 
-            
-            const fs = require('fs');
+            async function updateScoreIfHigher(userId, scoreValue) {
+                const db = new sqlite3.Database(dbPath, (err) => {
+                    if (err) {
+                        console.error(err.message);
+                        return;
+                    }
+                    console.log('Connected to the test database.');
+                });
 
-            function addOrUpdateScore(userId, scoreValue) {
-                const scoreFile = `./scores/${userId}.json`;
-
-                //check if the file exists
-                if (fs.existsSync(scoreFile)) {
-                    //if it exists, read the file
-                    fs.readFile(scoreFile, 'utf8', (err, data) => {
-                        if (err) {
-                            console.error(err);
-                            return;
-                        }
-                        //parse the data
-                        const scoreData = JSON.parse(data);
-                        //update the score
-                        //e.g. scoreData.score = 91 scoreValue = 100
-                        (scoreValue >= scoreData.score) ? scoreData.score = scoreValue : scoreData.score = scoreData.score;
-                        //write the updated score to the file
-                        fs.writeFile(scoreFile, JSON.stringify(scoreData, null, 4), (err) => {
+                db.get('SELECT scores FROM users WHERE discord_id_user = ?', [userId], (err, row) => {
+                    if (err) {
+                        console.error(err.message);
+                    } else if (row && scoreValue > row.scores) {
+                        db.run('UPDATE users SET scores = ? WHERE discord_id_user = ?', [scoreValue, userId], (err) => {
                             if (err) {
-                                console.error(err);
-                                return;
+                                console.error(err.message);
                             }
                         });
-                    });
-                } else {
-                    //if the file does not exist, create a new file and directory
-                    fs.mkdir('./scores', { recursive: true }, (err) => {
-                        if (err) {
-                            console.error(err);
-                            return;
-                        }
-                        //create a new score object
-                        const scoreData = {
-                            score: scoreValue,
-                        };
-                        //write the score object to the file
-                        fs.writeFile(scoreFile, JSON.stringify(scoreData, null, 4), (err) => {
-                            if (err) {
-                                console.error(err);
-                                return;
-                            }
-                        });
-                    });
-                }
-               
+                    }
+                });
+
+                db.close((err) => {
+                    if (err) {
+                        console.error(err.message);
+                    }
+                    console.log('Close the database connection.');
+                });
             }
 
-            //update the file
-            addOrUpdateScore(interaction.user.id, scoreValue);
-
+            // update the database
+            await updateScoreIfHigher(interaction.user.id, scoreValue);
         });
     },
 };
