@@ -2,7 +2,7 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder, Embed
 const fs = require('fs');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
-const { hasGoodRole } = require('./discordCommands');
+const { hasGoodRole, goodRoles } = require('./discordCommands');
 
 const dbPath = path.resolve(__dirname, '../db/test.db');
 const dbDir = path.dirname(dbPath);
