@@ -23,7 +23,7 @@ module.exports = {
 
     async execute(interaction) {
         const text = interaction.options.getString('text');
-
+        const userID = interaction.user.id;
         if (!hasGoodRole(interaction.member)) {
             return interaction.reply({
                 content: `<@${userID}>, you can't server mute ${userMentioned} because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
