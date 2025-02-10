@@ -85,6 +85,7 @@ module.exports = {
                         name: `Item ${index + 1}`,
                         value: message,
                         inline: false,
+                        ephemeral: true,
                     });
                 });
 
