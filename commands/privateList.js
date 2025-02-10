@@ -27,7 +27,7 @@ module.exports = {
         const userMentioned = interaction.user;
         if (!hasGoodRole(interaction.member)) {
             return interaction.reply({
-                content: `<@${userID}>, you can't server mute ${userMentioned} because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
+                content: `<@${userID}>, you can't use this ${userMentioned} because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
                 ephemeral: true,
             });
         }
