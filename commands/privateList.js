@@ -2,6 +2,7 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder, Embed
 const fs = require('fs');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
+const { hasGoodRole } = require('./discordCommands');
 
 const dbPath = path.resolve(__dirname, '../db/test.db');
 const dbDir = path.dirname(dbPath);
@@ -22,6 +23,13 @@ module.exports = {
 
     async execute(interaction) {
         const text = interaction.options.getString('text');
+
+        if (!hasGoodRole(interaction.member)) {
+            return interaction.reply({
+                content: `<@${userID}>, you can't server mute ${userMentioned} because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
+                ephemeral: true,
+            });
+        }
 
         const db = new sqlite3.Database(dbPath, (err) => {
             if (err) {
@@ -85,11 +93,10 @@ module.exports = {
                         name: `Item ${index + 1}`,
                         value: message,
                         inline: false,
-                        ephemeral: true,
                     });
                 });
 
-                await interaction.reply({ embeds: [listEmbed] });
+                await interaction.reply({ embeds: [listEmbed], ephemeral: true });
                 db.close((err) => {
                     if (err) {
                         console.error(err.message);
@@ -100,4 +107,5 @@ module.exports = {
         }
     },
 };
+
 
