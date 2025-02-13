@@ -23,6 +23,11 @@ module.exports = {
 
     async execute(interaction) {
         const text = interaction.options.getString('text');
+        const textRegex = /^[a-zA-Z0-9\s]*$/;
+        //checking if the user typed a text and he is not trying to sql injection
+        if (text && !textRegex.test(text)) {
+            return interaction.reply({ content: 'The text can only contain letters and numbers.', ephemeral: true });
+        }
         const userID = interaction.user.id;
         const userMentioned = interaction.user;
         if (!hasGoodRole(interaction.member)) {
@@ -108,5 +113,3 @@ module.exports = {
         }
     },
 };
-
-
