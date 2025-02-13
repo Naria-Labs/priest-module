@@ -7,7 +7,7 @@ const { admins } = require('./discordCommands');
 const options = [
     { name: 'Fetch', value: 'Fetch' },
 ];
-
+//sqlite3 test.db btw for the future dummy
 const dbPath = path.resolve(__dirname, '../db/test.db');
 const dbDir = path.dirname(dbPath);
 
@@ -28,15 +28,14 @@ module.exports = {
         ),
 
     async execute(interaction) {
-    const userID = interaction.user.id;
+        const userID = interaction.user.id;
         if (!admins.includes(userID)) {
-	return interaction.reply({
-		content: `You don't have permission to use this command.`,
-		ephemeral: true,
-	});
-}
+            return interaction.reply({
+                content: `You don't have permission to use this command.`,
+                ephemeral: true,
+            });
+        }
         const getOptions = interaction.options.getString('options');
-        const userId = interaction.user.id;
         const sqlite3 = require('sqlite3').verbose();
         const db = new sqlite3.Database(dbPath, (err) => {
             if (err) {
@@ -54,7 +53,9 @@ module.exports = {
                         console.error(err.message);
                     }
                     if (rows.length > 0) {
-                        const data = rows.map(row => `Uid: ${row.Uid}, Discord ID: ${row.discord_id_user}, Test: ${row.test}`).join('\n');
+                        const data = rows.map(row => {
+                            return Object.entries(row).map(([key, value]) => `${key}: ${value}`).join(', ');
+                        }).join('\n');
                         interaction.reply({ content: `Data in the database:\n${data}`, ephemeral: true });
                     } else {
                         interaction.reply({ content: 'No data found in the database.', ephemeral: true });
@@ -71,3 +72,4 @@ module.exports = {
         });
     },
 };
+
