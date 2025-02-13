@@ -5,7 +5,8 @@ const path = require('path');
 const { admins } = require('./discordCommands');
 
 const options = [
-    { name: 'Fetch', value: 'Fetch' },
+    { name: 'Fetch me', value: 'Fetch' },
+    { name: 'Fetch all', value: 'Fetch all'},
 ];
 //sqlite3 test.db btw for the future dummy
 const dbPath = path.resolve(__dirname, '../db/test.db');
@@ -48,6 +49,10 @@ module.exports = {
             db.run('CREATE TABLE IF NOT EXISTS users (Uid INTEGER PRIMARY KEY, discord_id_user TEXT UNIQUE, test TEXT)');
 
             if (getOptions === 'Fetch') {
+                db.all('SELECT * FROM users WHERE discord_id_user = ?', [interaction.user.id], (err, rows) => {
+                    if (err) {
+                        console.error(err.message);
+                if (getOptions === 'Fetch all') {
                 db.all('SELECT * FROM users', (err, rows) => {
                     if (err) {
                         console.error(err.message);
