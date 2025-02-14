@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, inlineCode, codeBlock } = require('discord.js');
 const { parse } = require('time-speak');
 
 const optionsTime = [
@@ -45,8 +45,8 @@ module.exports = {
         }
 
         const unixTime = Math.floor(timeParsed / 1000);
-        const reply =
-        `\`\`\`<t:${unixTime}:${timechoice}>\`\`\``; //replay with the dynamic time string that is possible to coppy I hope
+        const unixTimeCode = `<t:${unixTime}:${timechoice}>`
+        const reply = codeBlock(unixTimeCode);
 
         await interaction.reply({ content: reply, ephemeral: true });
     },
