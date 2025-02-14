@@ -45,8 +45,8 @@ module.exports = {
         }
 
         const unixTime = Math.floor(timeParsed / 1000);
-        const unixTime = `<t:${unixTime}: ${timechoice}>`
-        const reply = codeBlock(unixTime);
+        const unixTimeCode = `<t:${unixTime}: ${timechoice}>`
+        const reply = codeBlock(unixTimeCode);
 
         await interaction.reply({ content: reply, ephemeral: true });
     },
