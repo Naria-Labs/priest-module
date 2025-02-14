@@ -1,4 +1,4 @@
-﻿const { SlashCommandBuilder } = require('discord.js');
+﻿const { SlashCommandBuilder, codeBlock } = require('discord.js');
 const { EmbedBuilder } = require('discord.js');
 const { exec } = require('child_process');
 const { admins } = require('./discordCommands');
@@ -44,12 +44,12 @@ module.exports = {
 			console.log(`stdout: ${stdout}`);
 			console.log(`stderr: ${stderr}`);
 			const output = stdout;
-			const last= output.slice(-1999);
-
+			const last = output.slice(-1999);
+			const lastCode = codeBlock(last);
 			const debugEmbed = new EmbedBuilder()
 				.setColor('#0099ff')
 				.setTitle('Command Output')
-				.setDescription(`\`\`\`${last}\`\`\``) // Slice to last 1984 characters
+				.setDescription(`${lastCode}`) // Slice to last 1984 characters
 				.setTimestamp();
 
 			interaction.followUp({	
