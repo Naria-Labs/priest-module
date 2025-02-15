@@ -60,6 +60,17 @@ A versatile Discord bot module designed for a single user (@ThetaMTX), offering 
 /bstat [Set a bot to the 4 possible statuses (online, idle, dnd, invisible)] [set the message here]
 ```
 
+
+- **Data base**: See the database from the VPS (needs the correct discord id to use it :3).
+```
+/db [fetch me/fetchall]
+```
+
+- **Scan file**: Scan the file and send it to the virustotal website (max 25 MB)
+```
+/scabfile {attachment of the file}
+```
+
 ### 🎮 Mini-Games
 - **Snake Game**: A simple game where the user navigates an emote through a maze. The size of the maze is defined by the user.
 ```
