@@ -16,7 +16,8 @@ module.exports = {
                 .setRequired(true)),
 
     async execute(interaction) {
-        console.log('Command executed'); // Debugging statement
+        const user = interaction.user;
+        console.log('Command "Send message" was executed by', user); // Debugging statement
 
         const userMentioned = interaction.options.getUser('user');
         const userID = userMentioned.id;
@@ -27,7 +28,7 @@ module.exports = {
         console.log('Message:', message); // Debugging statement
 
         if (!hasGoodRole(interaction.member)) {
-            console.log('User does not have a good role'); // Debugging statement
+            console.log('User does not have a good role :', user); // Debugging statement
             return interaction.reply({
                 content: `<@${userID}>, you can't use this command because you don't have a ${goodRoles.map(role => `<@&${role}>`).join(' or ')}`,
                 ephemeral: true,
