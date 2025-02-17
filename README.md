@@ -102,4 +102,4 @@ A versatile Discord bot module designed for a single user (@ThetaMTX), offering 
 ---
 
 ## Notes
-- **Database Dependency**: Some features, such as `/pvlist`, require database integration for full functionality that will be implemented in this year copium. [x][x][]
+- **Database Dependency**: Some features, such as `/pvlist`, was resolved, although it is now reserved for a people with specific roles for the time being. the database is created only for priest module for master master repo it is needed to copy the db. as to how and when to do I imma say I dont know.
