@@ -40,11 +40,20 @@ function isValid(matrix, row, col, num) {
     return true;
 }
 
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
 function fillSudoku(matrix) {
+    const numbers = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]);
     for (let row = 0; row < 9; row++) {
         for (let col = 0; col < 9; col++) {
             if (matrix[row][col] === 0) {
-                for (let num = 1; num <= 9; num++) {
+                for (let num of numbers) {
                     if (isValid(matrix, row, col, num)) {
                         matrix[row][col] = num;
                         if (fillSudoku(matrix)) {
@@ -80,12 +89,11 @@ function formatSudoku(matrix) {
         }).join(' ');
 
         if ((rowIndex + 1) % 3 === 0 && rowIndex !== 8) {
-            return `${formattedRow}\n- - - - - - - - -\n`;
+            return `${formattedRow}\n- - - - - - - - - - -\n`;
         }
         return formattedRow;
     }).join('\n');
 }
-
 
 module.exports = {
     data: new SlashCommandBuilder()
