@@ -44,7 +44,7 @@ function fillSudoku(matrix) {
     for (let row = 0; row < 9; row++) {
         for (let col = 0; col < 9; col++) {
             if (matrix[row][col] === 0) {
-                for (let num = 1; num <= 9; num++) {
+                for (let num = 1; let num <= 9; num++) {
                     if (isValid(matrix, row, col, num)) {
                         matrix[row][col] = num;
                         if (fillSudoku(matrix)) {
@@ -69,7 +69,7 @@ function deleteNumbers(matrix, level) {
     }
     return matrix;
 }
-//add "|"every 3 numbers in the sudoku matrix and - every 3 rows
+
 function formatSudoku(matrix) {
     return matrix.map((row, index) => {
         const formattedRow = row.join(' ');
@@ -79,7 +79,6 @@ function formatSudoku(matrix) {
         return formattedRow;
     }).join('\n');
 }
-
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -99,13 +98,14 @@ module.exports = {
         fillSudoku(matrixSudoku);
         const finalSudoku = deleteNumbers(matrixSudoku, difficultyGroup);
         const formattedSudoku = formatSudoku(finalSudoku);
+
         await interaction.reply({ content: `You have selected ${difficulty[difficultyGroup]} with ${difficultyLevel} level`, ephemeral: true });
         const embed = new EmbedBuilder()
             .setColor(0x3498DB)
             .setTitle(`Sudoku ${difficulty[difficultyGroup]} ${difficultyLevel}`)
             .setDescription('Sudoku game')
             .addFields(
-                { name: 'Sudoku', value: `\`\`\`${formattedSudoku.map(row => row.join(' ')).join('\n')}\`\`\`` },
+                { name: 'Sudoku', value: `\`\`\`${formattedSudoku}\`\`\`` },
             )
             .setTimestamp()
             .setFooter({ text: `Powered by hopes and dreams` });
