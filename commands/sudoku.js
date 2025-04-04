@@ -71,13 +71,16 @@ function deleteNumbers(matrix, level) {
 }
 
 function formatSudoku(matrix) {
-    return matrix.map((row, index) => {
-        const formattedRow = row.join(' ');
-        if ((index + 1) % 3 === 0 && index !== 8) {
-            return `${formattedRow}\n- - - - - - - -\n`;
-        }
-        return formattedRow;
-    }).join('\n');
+    return matrix.map((row, rowIndex) => {
+        const formattedRow = row.map((num, colIndex) => {
+            if ((colIndex + 1) % 3 === 0 && colIndex !== 8) {
+                return `${num} |`;
+            }
+            return num;
+        }).join(' ');
+
+        if ((rowIndex + 1) % 3 === 0 && rowIndex !== 8) {
+            return `${formattedRow}\n- - - - - - - - - - -\n:}
 }
 
 module.exports = {
