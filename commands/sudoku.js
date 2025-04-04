@@ -80,8 +80,12 @@ function formatSudoku(matrix) {
         }).join(' ');
 
         if ((rowIndex + 1) % 3 === 0 && rowIndex !== 8) {
-            return `${formattedRow}\n- - - - - - - - - - -\n:}
+            return `${formattedRow}\n- - - - - - - - -\n`;
+        }
+        return formattedRow;
+    }).join('\n');
 }
+
 
 module.exports = {
     data: new SlashCommandBuilder()
