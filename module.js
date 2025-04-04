@@ -21,6 +21,7 @@ module.exports = {
     require('./commands/attachment.js'),
     require('./commands/flag.js'),
     require('./commands/dataBase.js'),
+    require('./commands/sudoku.js'),
     //random files
     require('./commands/discordCommands.js'),
   ]
