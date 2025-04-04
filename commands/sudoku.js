@@ -44,7 +44,7 @@ function fillSudoku(matrix) {
     for (let row = 0; row < 9; row++) {
         for (let col = 0; col < 9; col++) {
             if (matrix[row][col] === 0) {
-                for (let num = 1; let num <= 9; num++) {
+                for (let num = 1; num <= 9; num++) {
                     if (isValid(matrix, row, col, num)) {
                         matrix[row][col] = num;
                         if (fillSudoku(matrix)) {
