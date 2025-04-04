@@ -69,6 +69,17 @@ function deleteNumbers(matrix, level) {
     }
     return matrix;
 }
+//add "|"every 3 numbers in the sudoku matrix and - every 3 rows
+function formatSudoku(matrix) {
+    return matrix.map((row, index) => {
+        const formattedRow = row.join(' ');
+        if ((index + 1) % 3 === 0 && index !== 8) {
+            return `${formattedRow}\n- - - - - - - -\n`;
+        }
+        return formattedRow;
+    }).join('\n');
+}
+
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -87,14 +98,14 @@ module.exports = {
 
         fillSudoku(matrixSudoku);
         const finalSudoku = deleteNumbers(matrixSudoku, difficultyGroup);
-
+        const formattedSudoku = formatSudoku(finalSudoku);
         await interaction.reply({ content: `You have selected ${difficulty[difficultyGroup]} with ${difficultyLevel} level`, ephemeral: true });
         const embed = new EmbedBuilder()
             .setColor(0x3498DB)
             .setTitle(`Sudoku ${difficulty[difficultyGroup]} ${difficultyLevel}`)
             .setDescription('Sudoku game')
             .addFields(
-                { name: 'Sudoku', value: `\`\`\`${finalSudoku.map(row => row.join(' ')).join('\n')}\`\`\`` },
+                { name: 'Sudoku', value: `\`\`\`${formattedSudoku.map(row => row.join(' ')).join('\n')}\`\`\`` },
             )
             .setTimestamp()
             .setFooter({ text: `Powered by hopes and dreams` });
